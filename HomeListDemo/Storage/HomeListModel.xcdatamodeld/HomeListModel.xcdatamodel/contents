@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="24512" systemVersion="25A362" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithSwiftData="YES" userDefinedModelVersionIdentifier="">
+    <entity name="HouseholdItem" representedClassName="HouseholdItem" syncable="YES" codeGenerationType="class">
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="room" optional="YES" attributeType="String"/>
+        <attribute name="user" optional="YES" attributeType="String"/>
+    </entity>
+    <entity name="MenuItem" representedClassName="MenuItem" syncable="YES" codeGenerationType="class">
+        <attribute name="ingredientsList" optional="YES" attributeType="String"/>
+        <attribute name="meal" optional="YES" attributeType="String"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="priceTier" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+    </entity>
+    <entity name="Restaurant" representedClassName="Restaurant" syncable="YES" codeGenerationType="class">
+        <attribute name="menuItemList" optional="YES" attributeType="String"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="priceTier" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+    </entity>
+</model>
