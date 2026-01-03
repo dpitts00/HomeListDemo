@@ -12,7 +12,7 @@ struct MenuView: View {
     var body: some View {
         TabView {
             Tab {
-                MockHouseholdItemsListView()
+                HouseholdItemsListView()
             } label: {
                 Text("Household")
                 Image(systemName: "cross.case")
@@ -26,7 +26,7 @@ struct MenuView: View {
             }
 
             Tab {
-                MockFavoriteRestaurantsListView()
+                RestaurantsListView()
             } label: {
                 Text("Restaurants")
                 Image(systemName: "takeoutbag.and.cup.and.straw")

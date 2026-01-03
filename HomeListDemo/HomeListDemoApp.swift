@@ -6,12 +6,14 @@
 //
 
 import SwiftUI
+import CoreData
 
 @main
 struct HomeListDemoApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            MenuView()
+                .environment(\.managedObjectContext, StorageProvider.shared.persistentContainer.viewContext)
         }
     }
 }

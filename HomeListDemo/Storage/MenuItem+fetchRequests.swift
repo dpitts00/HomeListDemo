@@ -49,7 +49,7 @@ extension MenuItem {
     static let menuItemsByName: NSFetchRequest<MenuItem> = {
         let request: NSFetchRequest<MenuItem> = MenuItem.fetchRequest()
         request.sortDescriptors = [
-            NSSortDescriptor(keyPath: \MenuItem.name, ascending: false)
+            NSSortDescriptor(keyPath: \MenuItem.name, ascending: true)
         ]
         return request
     }()
@@ -57,7 +57,8 @@ extension MenuItem {
     static let menuItemsByMeal: NSFetchRequest<MenuItem> = {
         let request: NSFetchRequest<MenuItem> = MenuItem.fetchRequest()
         request.sortDescriptors = [
-            NSSortDescriptor(keyPath: \MenuItem.meal, ascending: false)
+            NSSortDescriptor(keyPath: \MenuItem.meal, ascending: true),
+            NSSortDescriptor(keyPath: \MenuItem.name, ascending: true)
         ]
         return request
     }()
@@ -66,28 +67,5 @@ extension MenuItem {
     static let sortByNameDescending = NSSortDescriptor(keyPath: \MenuItem.name, ascending: false)
     static let sortByMealAscending = NSSortDescriptor(keyPath: \MenuItem.meal, ascending: true)
     static let sortByMealDescending = NSSortDescriptor(keyPath: \MenuItem.meal, ascending: false)
-    
-    static func filterByMeal(_ meal: String?) -> NSPredicate? {
-        guard let meal else { return nil }
-        return NSPredicate(
-            format: "%K CONTAINS[cd] %@",
-            argumentArray: [
-                #keyPath(MenuItem.name),
-                meal
-            ]
-        )
-    }
-    
-    // doesn't work -- what's the KeyPath type?
-    static func filter(_ keyPath: KeyPath<MenuItem, String?>, keyword: String?) -> NSPredicate? {
-        guard let keyword else { return nil }
-        return NSPredicate(
-            format: "%K CONTAINS[cd] %@",
-            argumentArray: [
-                keyPath,
-                keyword
-            ]
-        )
-    }
 }
 

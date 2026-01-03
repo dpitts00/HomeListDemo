@@ -24,14 +24,28 @@ class StorageProvider {
         
         // DEBUG
         if getAllMenuItems().isEmpty {
-            saveMenuItem(named: "waffles", meal: "breakfast", priceTier: 1)
-            saveMenuItem(named: "egg sandwich", meal: "breakfast", priceTier: 1)
-            saveMenuItem(named: "uncrustables", meal: "lunch", priceTier: 1)
-            saveMenuItem(named: "pasta salad", meal: "lunch", priceTier: 2)
-            saveMenuItem(named: "pita and hummus", meal: "lunch", priceTier: 1)
-            saveMenuItem(named: "zucchini spaghetti", meal: "dinner", priceTier: 1)
-            saveMenuItem(named: "dumplings and sushi", meal: "dinner", priceTier: 1)
-            saveMenuItem(named: "frozen pizza and caesar salad", meal: "dinner", priceTier: 2)
+            saveMenuItem(named: "waffles", meal: .breakfast, priceTier: 1)
+            saveMenuItem(named: "egg sandwich", meal: .breakfast, priceTier: 1)
+            saveMenuItem(named: "uncrustables", meal: .lunch, priceTier: 1)
+            saveMenuItem(named: "pasta salad", meal: .lunch, priceTier: 2)
+            saveMenuItem(named: "pita and hummus", meal: .lunch, priceTier: 1)
+            saveMenuItem(named: "zucchini spaghetti", meal: .dinner, priceTier: 1)
+            saveMenuItem(named: "dumplings and sushi", meal: .dinner, priceTier: 1)
+            saveMenuItem(named: "frozen pizza and caesar salad", meal: .dinner, priceTier: 2)
+            saveMenuItem(named: "pretzels", meal: .snacks, priceTier: 1)
+        }
+        
+        if getAllHouseholdItems().isEmpty {
+            saveHouseholdItem(named: "soap", room: "bathroom")
+            saveHouseholdItem(named: "laundry detergent", room: "laundry")
+        }
+        
+        if getAllRestaurants().isEmpty {
+            saveRestaurant(named: "Swad", menuItems: "paneer makhani\nbengan bharta\naan", priceTier: 2)
+            saveRestaurant(named: "Culvers", menuItems: "cheeseburger", priceTier: 1)
+            saveRestaurant(named: "Chipotle", menuItems: "burrito", priceTier: 1)
+            saveRestaurant(named: "Mint Mark", menuItems: "", priceTier: 4)
+            saveRestaurant(named: "Ha long bay", menuItems: "", priceTier: 2)
         }
     }
 }

@@ -17,17 +17,12 @@ struct FilterView<T: Filterable>: View {
         List {
             Section("Filter by") {
                 ForEach($filterSelections, id: \.self) { $filter in
-                    Picker(filter.displayName, selection: $filter.selectedValue) {
-                        ForEach(filter.values, id: \.self) { value in
-                            Text(value.displayName)
-                                .tag(value.rawValue, includeOptional: true) // maybe not
-                        }
-                    }
+                    FilterSelectionView(filter: $filter)
                 }
-                .onChange(of: filterSelections) { _, newValue in
-                    let predicates = newValue.compactMap { $0.predicate }
-                    predicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
-                }
+            }
+            .onChange(of: filterSelections) { _, newValue in
+                let predicates = newValue.compactMap { $0.predicate }
+                predicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
             }
             
             Button(role: .destructive) {

@@ -9,11 +9,11 @@ import Foundation
 import CoreData
 
 extension StorageProvider {
-    func saveMenuItem(named name: String, ingredients: String = "", meal: String? = nil, priceTier: Int = 0) {
+    func saveMenuItem(named name: String, ingredients: String = "", meal: Meal = .none, priceTier: Int = 0) {
         let menuItem = MenuItem(context: persistentContainer.viewContext)
         menuItem.name = name
         menuItem.ingredientsList = ingredients
-        menuItem.meal = meal
+        menuItem.meal = meal.rawValue
         menuItem.priceTier = Int16(priceTier)
         
         do {
@@ -47,6 +47,7 @@ extension StorageProvider {
         }
     }
     
+    // TODO: Error - not updating the view when the priceTier is updated, even though the model is updated
     func updateMenuItems() {
         do {
             try persistentContainer.viewContext.save()

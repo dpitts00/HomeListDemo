@@ -1,16 +1,16 @@
 //
-//  StringSortSelection.swift
+//  IntSortSelection.swift
 //  HomeListDemo
 //
-//  Created by Daniel Pitts on 1/2/26.
+//  Created by Daniel Pitts on 1/3/26.
 //
 
 import Foundation
 import CoreData
 
-struct StringSortSelection<T: Hashable>: SortSelection {
+struct IntSortSelection<T: Hashable>: SortSelection {
     let displayName: String
-    let keyPath: KeyPath<T, String?> // ?? Using Hashable instead of the NSManagedObject -- does this work?
+    let keyPath: KeyPath<T, Int16> // ?? Using Hashable instead of the NSManagedObject -- does this work?
     let ascending: Bool
     
     var id: String {
