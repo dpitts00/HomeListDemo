@@ -9,6 +9,8 @@ import SwiftUI
 import CoreData
 
 struct FilterView<T: Filterable>: View {
+    @Environment(\.dismiss) var dismiss
+    
     @Binding var predicate: NSPredicate?
     
     @State var filterSelections: [FilterSelection] = T.standardFilters()
@@ -23,12 +25,14 @@ struct FilterView<T: Filterable>: View {
             .onChange(of: filterSelections) { _, newValue in
                 let predicates = newValue.compactMap { $0.predicate }
                 predicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
+                dismiss()
             }
             
             Button(role: .destructive) {
                 filterSelections.enumerated().forEach { index, selection in
                     filterSelections[index].clearSelection()
                 }
+                dismiss()
             } label: {
                 Text("Clear all filters")
             }

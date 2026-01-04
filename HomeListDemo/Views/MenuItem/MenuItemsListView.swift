@@ -22,7 +22,9 @@ struct MenuItemsListView: View {
         NavigationStack {
             List {
                 ForEach(sectionedItems) { section in
-                    Section(Meal.init(rawValue: section.id ?? "a")?.displayName ?? "-") {
+                    // TODO: String formatting for diff keypaths
+//                    Section(Meal.init(rawValue: section.id ?? "a")?.displayName ?? "-") {
+                    Section(section.id ?? "-") {
                         ForEach(section) { menuItem in
                             MenuItemListItem(menuItem: menuItem, action: { selectedItem = menuItem })
                         }

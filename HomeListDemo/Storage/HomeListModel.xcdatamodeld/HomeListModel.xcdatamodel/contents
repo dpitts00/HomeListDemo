@@ -9,11 +9,13 @@
         <attribute name="ingredientsList" optional="YES" attributeType="String"/>
         <attribute name="meal" optional="YES" attributeType="String"/>
         <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="nameFirstLetter" optional="YES" attributeType="String"/>
         <attribute name="priceTier" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
     </entity>
     <entity name="Restaurant" representedClassName="Restaurant" syncable="YES" codeGenerationType="class">
         <attribute name="menuItemList" optional="YES" attributeType="String"/>
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="priceTier" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="priceTierString" optional="YES" attributeType="String"/>
     </entity>
 </model>

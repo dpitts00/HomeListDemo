@@ -54,6 +54,14 @@ extension MenuItem {
         return request
     }()
     
+    static let menuItemsByNameFirstLetter: NSFetchRequest<MenuItem> = {
+        let request: NSFetchRequest<MenuItem> = MenuItem.fetchRequest()
+        request.sortDescriptors = [
+            NSSortDescriptor(keyPath: \MenuItem.nameFirstLetter, ascending: true)
+        ]
+        return request
+    }()
+    
     static let menuItemsByMeal: NSFetchRequest<MenuItem> = {
         let request: NSFetchRequest<MenuItem> = MenuItem.fetchRequest()
         request.sortDescriptors = [

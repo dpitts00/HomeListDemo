@@ -13,8 +13,7 @@ extension Restaurant {
         name ?? ""
     }
     
-    @objc
-    var priceTierString: String? {
+    func priceTierStringValue() -> String? {
         switch priceTier {
         case 0:
             return ""

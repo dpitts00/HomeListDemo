@@ -9,6 +9,8 @@ import SwiftUI
 import CoreData
 
 struct SortView<T: Sortable, U: Hashable>: View {
+    @Environment(\.dismiss) var dismiss
+    
     @Binding var sortDescriptors: [NSSortDescriptor] // SortDescriptor is typed by KeyPath<Root, Value>
     @Binding var sectionIdentifier: KeyPath<T, U?> // KeyPath<Root, Value?> is required
 //    @Binding var sectionIdentifierKeyPath: AnyKeyPath?
@@ -24,7 +26,7 @@ struct SortView<T: Sortable, U: Hashable>: View {
                         if let identifier = selection.sectionIdentifier as? KeyPath<T, U?> {
                             sectionIdentifier = identifier
                         }
-//                        sectionIdentifierKeyPath = selection.sectionIdentifier
+                        dismiss()
                     } label: {
                         Text(selection.displayName)
                     }
@@ -38,6 +40,5 @@ struct SortView<T: Sortable, U: Hashable>: View {
     SortView<MenuItem, String>(
         sortDescriptors: .constant([MenuItem.sortByMealAscending]),
         sectionIdentifier: .constant(\MenuItem.meal)
-//        sectionIdentifierKeyPath: .constant(nil)
     )
 }

@@ -13,8 +13,8 @@ extension Restaurant: Sortable {
         return [
             StringSortSelection(displayName: "Name asc", keyPath: \Restaurant.name, ascending: true),
             StringSortSelection(displayName: "Name desc", keyPath: \Restaurant.name, ascending: false),
-            IntSortSelection(displayName: "Price asc", keyPath: \Restaurant.priceTier, ascending: true),
-            IntSortSelection(displayName: "Price desc", keyPath: \Restaurant.priceTier, ascending: false)
+            StringSortSelection(displayName: "Price asc", keyPath: \Restaurant.priceTierString, ascending: true),
+            StringSortSelection(displayName: "Price desc", keyPath: \Restaurant.priceTierString, ascending: false)
         ]
     }
 }
