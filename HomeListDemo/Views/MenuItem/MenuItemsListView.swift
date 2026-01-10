@@ -9,6 +9,9 @@ import SwiftUI
 import CoreData
 
 struct MenuItemsListView: View {
+    @FetchRequest(fetchRequest: MenuItemList.currentList)
+    private var currentListArray: FetchedResults<MenuItemList>
+    
     @SectionedFetchRequest(fetchRequest: MenuItem.menuItemsByMeal, sectionIdentifier: \MenuItem.meal)
     var sectionedItems: SectionedFetchResults<String?, MenuItem>
     
@@ -17,16 +20,51 @@ struct MenuItemsListView: View {
     @State var showSort: Bool = false
     
     @State var selectedItem: MenuItem?
+    @State var onlyShowSelectedItems: Bool = false
+    
+    @State var selectedList: MenuItemList?
+    
+    var currentList: MenuItemList? {
+        currentListArray.first
+    }
     
     var body: some View {
         NavigationStack {
             List {
+                if let currentList {
+                    Button {
+                        selectedList = currentList
+                    } label: {
+                        LabeledContent {
+                            Text("\(currentList.itemCount)")
+                        } label: {
+                            Label(currentList.name ?? "", systemImage: "star.fill")
+                                .foregroundStyle(.primary)
+                        }
+                    }
+                }
+                
                 ForEach(sectionedItems) { section in
-                    // TODO: String formatting for diff keypaths
-//                    Section(Meal.init(rawValue: section.id ?? "a")?.displayName ?? "-") {
-                    Section(section.id ?? "-") {
+                    Section(ListHelpers.sectionDisplayName(for: section.id)) {
                         ForEach(section) { menuItem in
-                            MenuItemListItem(menuItem: menuItem, action: { selectedItem = menuItem })
+                            MenuItemListItem(
+                                menuItem: menuItem,
+                                currentList: currentList,
+                                leadingAction: {
+                                   selectedItem = menuItem
+                                },
+                                trailingAction: {},
+                                tapAction: {
+                                    guard let currentList else { return }
+                                    if currentList.items?.contains(menuItem) ?? false {
+                                        currentList.removeFromItems(menuItem)
+                                        StorageProvider.shared.update()
+                                    } else {
+                                        currentList.addToItems(menuItem)
+                                        StorageProvider.shared.update()
+                                    }
+                                }
+                            )
                         }
                     }
                 }
@@ -55,6 +93,10 @@ struct MenuItemsListView: View {
                 }
 
             }
+            .onChange(of: currentList?.items) { _, newValue in
+                // DEBUG ONLY, it's not updating the fetched results in the Lists tab
+                print("currentList.items changed")
+            }
             .onChange(of: searchText) {
                 _,
                 newValue in
@@ -70,9 +112,17 @@ struct MenuItemsListView: View {
                     ].compactMap { $0 }
                 )
             }
-            .navigationTitle("Menu Items")
+            .navigationTitle("Menu")
             .toolbarTitleDisplayMode(.inlineLarge)
             .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        onlyShowSelectedItems.toggle()
+                    } label: {
+                        Image(systemName: onlyShowSelectedItems ? "eye.fill" : "eye")
+                    }
+                }
+                
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
                         showSort.toggle()
@@ -87,6 +137,19 @@ struct MenuItemsListView: View {
                     } label: {
                         Image(systemName: "line.3.horizontal.decrease")
                     }
+                }
+                
+                ToolbarItem(placement: .topBarTrailing) {
+                    EditButton()
+                }
+            }
+            .onChange(of: onlyShowSelectedItems) { _, show in
+                searchText = "" // maybe
+                
+                if show {
+                    sectionedItems.nsPredicate = NSPredicate.predicate(keyPathString: #keyPath(MenuItem.lists), value: currentList)
+                } else {
+                    sectionedItems.nsPredicate = nil
                 }
             }
             .searchable(text: $searchText, placement: .automatic, prompt: Text("Menu item?"))
@@ -103,6 +166,9 @@ struct MenuItemsListView: View {
             }
             .sheet(item: $selectedItem) { item in
                 MenuItemDetailsView(item: item)
+            }
+            .sheet(item: $selectedList) { list in
+                MenuItemListDetailsView(list: list)
             }
         }
     }

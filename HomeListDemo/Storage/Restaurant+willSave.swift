@@ -13,5 +13,6 @@ extension Restaurant {
         super.willSave()
         
         setPrimitiveValue(priceTierStringValue(), forKey: #keyPath(Restaurant.priceTierString))
+        setPrimitiveValue(name?.first?.asString?.uppercased(), forKey: #keyPath(Restaurant.nameFirstLetter))
     }
 }

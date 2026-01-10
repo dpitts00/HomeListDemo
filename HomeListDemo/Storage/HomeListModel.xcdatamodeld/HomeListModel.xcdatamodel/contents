@@ -2,8 +2,15 @@
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="24512" systemVersion="25A362" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithSwiftData="YES" userDefinedModelVersionIdentifier="">
     <entity name="HouseholdItem" representedClassName="HouseholdItem" syncable="YES" codeGenerationType="class">
         <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="nameFirstLetter" optional="YES" attributeType="String"/>
         <attribute name="room" optional="YES" attributeType="String"/>
         <attribute name="user" optional="YES" attributeType="String"/>
+    </entity>
+    <entity name="HouseholdItemList" representedClassName="HouseholdItemList" syncable="YES" codeGenerationType="class">
+        <attribute name="isCurrent" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="itemCount" optional="YES" attributeType="Integer 32" derived="YES" derivationExpression="items.@count" usesScalarValueType="YES"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <relationship name="items" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="HouseholdItem"/>
     </entity>
     <entity name="MenuItem" representedClassName="MenuItem" syncable="YES" codeGenerationType="class">
         <attribute name="ingredientsList" optional="YES" attributeType="String"/>
@@ -11,11 +18,25 @@
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="nameFirstLetter" optional="YES" attributeType="String"/>
         <attribute name="priceTier" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="lists" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="MenuItemList" inverseName="items" inverseEntity="MenuItemList"/>
+    </entity>
+    <entity name="MenuItemList" representedClassName="MenuItemList" syncable="YES" codeGenerationType="class">
+        <attribute name="isCurrent" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="itemCount" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <relationship name="items" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="MenuItem" inverseName="lists" inverseEntity="MenuItem"/>
     </entity>
     <entity name="Restaurant" representedClassName="Restaurant" syncable="YES" codeGenerationType="class">
         <attribute name="menuItemList" optional="YES" attributeType="String"/>
         <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="nameFirstLetter" optional="YES" attributeType="String"/>
         <attribute name="priceTier" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="priceTierString" optional="YES" attributeType="String"/>
+    </entity>
+    <entity name="RestaurantList" representedClassName="RestaurantList" syncable="YES" codeGenerationType="class">
+        <attribute name="isCurrent" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="itemCount" optional="YES" attributeType="Integer 32" derived="YES" derivationExpression="items.@count" usesScalarValueType="YES"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <relationship name="items" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Restaurant"/>
     </entity>
 </model>

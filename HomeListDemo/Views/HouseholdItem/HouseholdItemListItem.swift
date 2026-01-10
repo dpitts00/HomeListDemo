@@ -27,14 +27,14 @@ struct HouseholdItemListItem: View {
             }
         }
         .contentShape(Rectangle())
-        .swipeActions {
-            Button(role: .destructive) {
-                StorageProvider.shared.deleteHouseholdItem(item)
-            } label: {
-                Text("Delete")
-                Image(systemName: "trash.fill")
-            }
-        }
+//        .swipeActions {
+//            Button(role: .destructive) {
+//                StorageProvider.shared.deleteHouseholdItem(item)
+//            } label: {
+//                Text("Delete")
+//                Image(systemName: "trash.fill")
+//            }
+//        }
 
     }
 }

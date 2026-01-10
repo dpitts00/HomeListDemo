@@ -76,4 +76,3 @@ extension MenuItem {
     static let sortByMealAscending = NSSortDescriptor(keyPath: \MenuItem.meal, ascending: true)
     static let sortByMealDescending = NSSortDescriptor(keyPath: \MenuItem.meal, ascending: false)
 }
-

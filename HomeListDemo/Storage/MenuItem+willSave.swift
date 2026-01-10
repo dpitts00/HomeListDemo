@@ -8,15 +8,9 @@
 import Foundation
 import CoreData
 
-extension Character {
-    var asString: String? {
-        return String(self)
-    }
-}
-
 extension MenuItem {
     override public func willSave() {
         super.willSave()
-        setPrimitiveValue(name?.first?.asString, forKey: #keyPath(MenuItem.nameFirstLetter))
+        setPrimitiveValue(name?.first?.asString?.uppercased(), forKey: #keyPath(MenuItem.nameFirstLetter))
     }
 }

@@ -31,6 +31,13 @@ struct MenuView: View {
                 Text("Restaurants")
                 Image(systemName: "takeoutbag.and.cup.and.straw")
             }
+            
+            Tab {
+                ListsView()
+            } label: {
+                Text("Lists")
+                Image(systemName: "list.clipboard")
+            }
         }
     }
 }

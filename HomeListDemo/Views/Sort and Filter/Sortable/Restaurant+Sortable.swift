@@ -11,8 +11,8 @@ import CoreData
 extension Restaurant: Sortable {
     static func standardSorts() -> [any SortSelection] {
         return [
-            StringSortSelection(displayName: "Name asc", keyPath: \Restaurant.name, ascending: true),
-            StringSortSelection(displayName: "Name desc", keyPath: \Restaurant.name, ascending: false),
+            StringSortSelection(displayName: "Name asc", keyPath: \Restaurant.nameFirstLetter, ascending: true),
+            StringSortSelection(displayName: "Name desc", keyPath: \Restaurant.nameFirstLetter, ascending: false),
             StringSortSelection(displayName: "Price asc", keyPath: \Restaurant.priceTierString, ascending: true),
             StringSortSelection(displayName: "Price desc", keyPath: \Restaurant.priceTierString, ascending: false)
         ]

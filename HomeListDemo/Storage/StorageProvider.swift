@@ -37,6 +37,9 @@ class StorageProvider {
         
         if getAllHouseholdItems().isEmpty {
             saveHouseholdItem(named: "soap", room: "bathroom")
+            saveHouseholdItem(named: "shampoo", room: "bathroom")
+            saveHouseholdItem(named: "conditioner", room: "bathroom")
+            saveHouseholdItem(named: "face lotion", room: "bathroom")
             saveHouseholdItem(named: "laundry detergent", room: "laundry")
         }
         
@@ -46,6 +49,10 @@ class StorageProvider {
             saveRestaurant(named: "Chipotle", menuItems: "burrito", priceTier: 1)
             saveRestaurant(named: "Mint Mark", menuItems: "", priceTier: 4)
             saveRestaurant(named: "Ha long bay", menuItems: "", priceTier: 2)
+        }
+        
+        if getAllMenuItemLists().isEmpty {
+            saveMenuItemList(named: "Default MenuItem List", isCurrent: true)
         }
     }
 }

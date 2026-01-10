@@ -29,6 +29,12 @@ struct HouseholdItemsListView: View {
                                 action: { selectedItem = item }
                             )
                         }
+                        .onDelete { indexSet in
+                            indexSet.forEach { index in
+                                let item = section[index]
+                                StorageProvider.shared.deleteHouseholdItem(item)
+                            }
+                        }
                     }
                 }
                 
@@ -70,7 +76,7 @@ struct HouseholdItemsListView: View {
                     ]
                 )
             }
-            .navigationTitle("Household Items")
+            .navigationTitle("Household")
             .toolbarTitleDisplayMode(.inlineLarge)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
@@ -87,6 +93,10 @@ struct HouseholdItemsListView: View {
                     } label: {
                         Image(systemName: "line.3.horizontal.decrease")
                     }
+                }
+                
+                ToolbarItem(placement: .topBarTrailing) {
+                    EditButton()
                 }
             }
             .searchable(text: $searchText, placement: .automatic, prompt: Text("Household item?"))

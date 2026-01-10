@@ -9,11 +9,11 @@ import Foundation
 import CoreData
 
 enum Meal: String, CaseIterable {
-    case none = "a"
-    case breakfast = "b"
-    case lunch = "c"
-    case dinner = "d"
-    case snacks = "e"
+    case none = "Meal-A"
+    case breakfast = "Meal-B"
+    case lunch = "Meal-C"
+    case dinner = "Meal-D"
+    case snacks = "Meal-E"
 }
 
 extension Meal {
