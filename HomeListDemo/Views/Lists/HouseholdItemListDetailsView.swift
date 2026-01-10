@@ -1,15 +1,15 @@
 //
-//  MenuItemListDetailsView.swift
+//  HouseholdItemListDetailsView.swift
 //  HomeListDemo
 //
-//  Created by Daniel Pitts on 1/8/26.
+//  Created by Daniel Pitts on 1/10/26.
 //
 
 import SwiftUI
 import CoreData
 
-struct MenuItemListDetailsView: View {
-    var list: MenuItemList
+struct HouseholdItemListDetailsView: View {
+    var list: HouseholdItemList
     
     @State private var name: String = ""
     
@@ -19,9 +19,9 @@ struct MenuItemListDetailsView: View {
                 TextField("Name", text: $name)
             }
 
-            Section("Menu Items") {
+            Section("Household Items") {
                 ForEach(list.itemsArray) { item in
-                    Text(item.nameString)
+                    Text(item.name ?? "")
                 }
             }
         }
@@ -36,9 +36,9 @@ struct MenuItemListDetailsView: View {
 }
 
 #Preview {
-    let lists = StorageProvider.shared.getAllMenuItemLists()
+    let lists = StorageProvider.shared.getAllHouseholdItemLists()
     if lists.count > 0 {
-        MenuItemListDetailsView(list: lists[0])
+        HouseholdItemListDetailsView(list: lists[0])
     } else {
         Text("no lists saved")
     }

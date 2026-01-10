@@ -53,7 +53,8 @@ extension NSPredicate {
     }
     
     // for checking MenuItem.lists for a specific MenuItemList
-    public static func predicate(keyPathString: String, value: MenuItemList?) -> NSPredicate {
+    // MenuItemList? works as a value, does NSManagedObject? more generally?
+    public static func predicate(keyPathString: String, value: NSManagedObject?) -> NSPredicate {
         return NSPredicate(
             format: "%K CONTAINS %@",
             argumentArray: [

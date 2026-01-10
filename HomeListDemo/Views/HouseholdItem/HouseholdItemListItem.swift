@@ -10,13 +10,20 @@ import SwiftUI
 
 struct HouseholdItemListItem: View {
     var item: HouseholdItem
-    var action: () -> ()
-    
+    var currentList: HouseholdItemList?
+    var leadingAction: () -> ()
+    var trailingAction: () -> ()
+    var tapAction: () -> ()
+
     var body: some View {
         Button {
-            action()
+            tapAction()
         } label: {
-            HStack {
+            HStack(spacing: 12) {
+                if let currentList {
+                    Image(systemName: currentList.items?.contains(item) ?? false ? "checkmark.square.fill" : "square")
+                }
+
                 VStack(alignment: .leading) {
                     Text(item.name ?? "")
                         .font(.headline)
@@ -27,21 +34,22 @@ struct HouseholdItemListItem: View {
             }
         }
         .contentShape(Rectangle())
-//        .swipeActions {
-//            Button(role: .destructive) {
-//                StorageProvider.shared.deleteHouseholdItem(item)
-//            } label: {
-//                Text("Delete")
-//                Image(systemName: "trash.fill")
-//            }
-//        }
-
+        .swipeActions(edge: .leading, allowsFullSwipe: true) {
+            Button {
+                leadingAction()
+            } label: {
+                Text("Select")
+                Image(systemName: "plus")
+            }
+        }
     }
 }
 
 #Preview {
     HouseholdItemListItem(
         item: StorageProvider.shared.getAllHouseholdItems()[0],
-        action: {}
+        leadingAction: {},
+        trailingAction: {},
+        tapAction: {}
     )
 }

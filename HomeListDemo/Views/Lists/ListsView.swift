@@ -20,6 +20,9 @@ struct ListsView: View {
     
     @State private var path = NavigationPath()
     
+    @State private var showMenu = false
+    @State private var forceRefresh: String = ""
+    
     var body: some View {
         NavigationStack(path: $path) {
             List {
@@ -45,34 +48,87 @@ struct ListsView: View {
                 
                 Section("Restaurant") {
                     ForEach(restaurantLists) { list in
-                        HStack {
-                            Text(list.name ?? "")
-                            Spacer()
-                            Text("\(list.items?.count ?? 0)")
+                        RestaurantListItemView(list: list, path: $path)
+                    }
+                    .onDelete { indexSet in
+                        indexSet.forEach { index in
+                            let item = restaurantLists[index]
+                            StorageProvider.shared.deleteRestaurantList(item)
                         }
+                    }
+                    
+                    Button(role: .destructive) {
+                        restaurantLists.forEach { list in
+                            StorageProvider.shared.deleteRestaurantList(list)
+                        }
+                    } label: {
+                        Text("Delete all")
                     }
                 }
 
                 Section("Household") {
                     ForEach(householdItemLists) { list in
-                        HStack {
-                            Text(list.name ?? "")
-                            Spacer()
-                            Text("\(list.items?.count ?? 0)")
+                        HouseholdItemListView(list: list, path: $path)
+                    }
+                    .onDelete { indexSet in
+                        indexSet.forEach { index in
+                            let item = householdItemLists[index]
+                            StorageProvider.shared.deleteHouseholdItemList(item)
                         }
+                    }
+                    
+                    Button(role: .destructive) {
+                        householdItemLists.forEach { list in
+                            StorageProvider.shared.deleteHouseholdItemList(list)
+                        }
+                    } label: {
+                        Text("Delete all")
                     }
                 }
             }
             .navigationDestination(for: MenuItemList.self) { list in
                 MenuItemListDetailsView(list: list)
             }
+            .navigationDestination(for: RestaurantList.self) { list in
+                RestaurantListDetailsView(list: list)
+            }
+            .navigationDestination(for: HouseholdItemList.self) { list in
+                HouseholdItemListDetailsView(list: list)
+            }
             .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        showMenu = true
+                    } label: {
+                        Image(systemName: "plus")
+                    }
+                    .contextMenu(menuItems: {
+                        Button {
+                            StorageProvider.shared.saveMenuItemList(named: "")
+                        } label: {
+                            Text("New Menu List")
+                        }
+                        
+                        Button {
+                            StorageProvider.shared.saveRestaurantList(named: "")
+                        } label: {
+                            Text("New Restaurant List")
+                        }
+
+                        Button {
+                            StorageProvider.shared.saveHouseholdItemList(named: "")
+                        } label: {
+                            Text("New Household List")
+                        }
+                    })
+                }
+                
                 ToolbarItem(placement: .topBarTrailing) {
                     EditButton()
                 }
             }
             .navigationTitle("Lists")
-            .toolbarTitleDisplayMode(.inlineLarge)
+            .toolbarTitleDisplayMode(.large) // .large or .inlineLarge
         }
     }
 }

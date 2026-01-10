@@ -16,4 +16,12 @@ extension RestaurantList {
         ]
         return request
     }()
+    
+    static let currentList: NSFetchRequest<RestaurantList> = {
+        let request: NSFetchRequest<RestaurantList> = RestaurantList.fetchRequest()
+        request.sortDescriptors = []
+        request.predicate = NSPredicate.predicate(keyPathString: #keyPath(RestaurantList.isCurrent), value: true)
+        return request
+    }()
+
 }

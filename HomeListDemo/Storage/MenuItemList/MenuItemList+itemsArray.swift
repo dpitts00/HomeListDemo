@@ -11,8 +11,7 @@ import CoreData
 extension MenuItemList {
     var itemsArray: [MenuItem] {
         items?.sortedArray(using: [
-            NSSortDescriptor(keyPath: \MenuItemList.name, ascending: true)
+            NSSortDescriptor(keyPath: \MenuItem.name, ascending: true)
         ]) as? [MenuItem] ?? []
     }
 }
-

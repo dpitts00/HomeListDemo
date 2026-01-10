@@ -16,4 +16,11 @@ extension HouseholdItemList {
         ]
         return request
     }()
+    
+    static let currentList: NSFetchRequest<HouseholdItemList> = {
+        let request: NSFetchRequest<HouseholdItemList> = HouseholdItemList.fetchRequest()
+        request.sortDescriptors = []
+        request.predicate = NSPredicate.predicate(keyPathString: #keyPath(HouseholdItemList.isCurrent), value: true)
+        return request
+    }()
 }

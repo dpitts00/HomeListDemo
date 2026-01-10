@@ -9,13 +9,20 @@ import SwiftUI
 
 struct RestaurantListItem: View {
     var item: Restaurant
-    var action: () -> ()
-    
+    var currentList: RestaurantList?
+    var leadingAction: () -> ()
+    var trailingAction: () -> ()
+    var tapAction: () -> ()
+
     var body: some View {
         Button {
-            action()
+            tapAction()
         } label: {
-            HStack {
+            HStack(spacing: 12) {
+                if let currentList {
+                    Image(systemName: currentList.items?.contains(item) ?? false ? "checkmark.square.fill" : "square")
+                }
+
                 VStack(alignment: .leading) {
                     Text(item.nameString)
                         .font(.headline)
@@ -28,21 +35,22 @@ struct RestaurantListItem: View {
             }
         }
         .contentShape(Rectangle())
-        .swipeActions {
-            Button(role: .destructive) {
-                StorageProvider.shared.deleteRestaurant(item)
+        .swipeActions(edge: .leading, allowsFullSwipe: true) {
+            Button {
+                leadingAction()
             } label: {
-                Text("Delete")
-                Image(systemName: "trash.fill")
+                Text("Select")
+                Image(systemName: "plus")
             }
         }
-
     }
 }
 
 #Preview {
     RestaurantListItem(
         item: StorageProvider.shared.getAllRestaurants()[0],
-        action: {}
+        leadingAction: {},
+        trailingAction: {},
+        tapAction: {}
     )
 }

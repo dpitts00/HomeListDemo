@@ -20,9 +20,9 @@ struct MenuItemsListView: View {
     @State var showSort: Bool = false
     
     @State var selectedItem: MenuItem?
-    @State var onlyShowSelectedItems: Bool = false
     
     @State var selectedList: MenuItemList?
+    @State var onlyShowSelectedItems: Bool = false
     
     var currentList: MenuItemList? {
         currentListArray.first
@@ -46,25 +46,31 @@ struct MenuItemsListView: View {
                 
                 ForEach(sectionedItems) { section in
                     Section(ListHelpers.sectionDisplayName(for: section.id)) {
-                        ForEach(section) { menuItem in
+                        ForEach(section) { item in
                             MenuItemListItem(
-                                menuItem: menuItem,
+                                item: item,
                                 currentList: currentList,
                                 leadingAction: {
-                                   selectedItem = menuItem
+                                   selectedItem = item
                                 },
                                 trailingAction: {},
                                 tapAction: {
                                     guard let currentList else { return }
-                                    if currentList.items?.contains(menuItem) ?? false {
-                                        currentList.removeFromItems(menuItem)
+                                    if currentList.items?.contains(item) ?? false {
+                                        currentList.removeFromItems(item)
                                         StorageProvider.shared.update()
                                     } else {
-                                        currentList.addToItems(menuItem)
+                                        currentList.addToItems(item)
                                         StorageProvider.shared.update()
                                     }
                                 }
                             )
+                        }
+                        .onDelete { indexSet in
+                            indexSet.forEach { index in
+                                let item = section[index]
+                                StorageProvider.shared.deleteMenuItem(item)
+                            }
                         }
                     }
                 }
@@ -113,13 +119,15 @@ struct MenuItemsListView: View {
                 )
             }
             .navigationTitle("Menu")
-            .toolbarTitleDisplayMode(.inlineLarge)
+            .toolbarTitleDisplayMode(.large) // .large or .inlineLarge
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        onlyShowSelectedItems.toggle()
-                    } label: {
-                        Image(systemName: onlyShowSelectedItems ? "eye.fill" : "eye")
+                if let _ = currentList {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button {
+                            onlyShowSelectedItems.toggle()
+                        } label: {
+                            Image(systemName: onlyShowSelectedItems ? "eye.fill" : "eye")
+                        }
                     }
                 }
                 
@@ -144,9 +152,10 @@ struct MenuItemsListView: View {
                 }
             }
             .onChange(of: onlyShowSelectedItems) { _, show in
-                searchText = "" // maybe
+                searchText = ""
                 
-                if show {
+                if show,
+                    let currentList {
                     sectionedItems.nsPredicate = NSPredicate.predicate(keyPathString: #keyPath(MenuItem.lists), value: currentList)
                 } else {
                     sectionedItems.nsPredicate = nil

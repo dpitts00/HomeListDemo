@@ -56,13 +56,4 @@ extension StorageProvider {
             print("Error deleting MenuItemList: \(error.localizedDescription)")
         }
     }
-    
-    func update() {
-        do {
-            try persistentContainer.viewContext.save()
-        } catch {
-            persistentContainer.viewContext.rollback()
-            print("Error updating viewContext \(persistentContainer.viewContext.description): \(error.localizedDescription)")
-        }
-    }
 }

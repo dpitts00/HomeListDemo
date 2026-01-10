@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct MenuItemListItem: View {
-    var menuItem: MenuItem
+    var item: MenuItem
     var currentList: MenuItemList?
     var leadingAction: () -> ()
     var trailingAction: () -> ()
@@ -20,16 +20,16 @@ struct MenuItemListItem: View {
         } label: {
             HStack(spacing: 12) {
                 if let currentList {
-                    Image(systemName: currentList.items?.contains(menuItem) ?? false ? "checkmark.square.fill" : "square")
+                    Image(systemName: currentList.items?.contains(item) ?? false ? "checkmark.square.fill" : "square")
                 }
                 VStack(alignment: .leading) {
-                    Text(menuItem.nameString)
+                    Text(item.nameString)
                         .font(.headline)
-                    Text(menuItem.mealSelection.displayName)
+                    Text(item.mealSelection.displayName)
                         .font(.subheadline)
                 }
                 Spacer()
-                Text(menuItem.priceTierString)
+                Text(item.priceTierString)
             }
         }
         .contentShape(Rectangle())
@@ -41,22 +41,13 @@ struct MenuItemListItem: View {
                 Image(systemName: "plus")
             }
         }
-//        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-//            Button(role: .destructive) {
-//                trailingAction()
-//            } label: {
-//                Text("Delete")
-//                Image(systemName: "trash.fill")
-//            }
-//        }
-
     }
 }
 
 #Preview {
     List {
         MenuItemListItem(
-            menuItem: StorageProvider.shared.getAllMenuItems()[0],
+            item: StorageProvider.shared.getAllMenuItems()[0],
             leadingAction: {},
             trailingAction: {},
             tapAction: {}

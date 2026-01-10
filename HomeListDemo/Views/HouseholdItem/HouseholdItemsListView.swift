@@ -9,6 +9,9 @@ import SwiftUI
 import CoreData
 
 struct HouseholdItemsListView: View {
+    @FetchRequest(fetchRequest: HouseholdItemList.currentList)
+    private var currentListArray: FetchedResults<HouseholdItemList>
+    
     @SectionedFetchRequest(fetchRequest: HouseholdItem.householdItemsByRoom, sectionIdentifier: \HouseholdItem.room)
     var sectionedItems: SectionedFetchResults<String?, HouseholdItem>
     
@@ -17,16 +20,50 @@ struct HouseholdItemsListView: View {
     @State var showSort: Bool = false
     
     @State var selectedItem: HouseholdItem?
+    
+    @State var selectedList: HouseholdItemList?
+    @State var onlyShowSelectedItems: Bool = false
+
+    var currentList: HouseholdItemList? {
+        currentListArray.first
+    }
 
     var body: some View {
         NavigationStack {
             List {
+                if let currentList {
+                    Button {
+                        selectedList = currentList
+                    } label: {
+                        LabeledContent {
+                            Text("\(currentList.itemCount)")
+                        } label: {
+                            Label(currentList.name ?? "", systemImage: "star.fill")
+                                .foregroundStyle(.primary)
+                        }
+                    }
+                }
+
                 ForEach(sectionedItems) { section in
                     Section(section.id ?? "uncategorized") {
                         ForEach(section) { item in
                             HouseholdItemListItem(
                                 item: item,
-                                action: { selectedItem = item }
+                                currentList: currentList,
+                                leadingAction: {
+                                   selectedItem = item
+                                },
+                                trailingAction: {},
+                                tapAction: {
+                                    guard let currentList else { return }
+                                    if currentList.items?.contains(item) ?? false {
+                                        currentList.removeFromItems(item)
+                                        StorageProvider.shared.update()
+                                    } else {
+                                        currentList.addToItems(item)
+                                        StorageProvider.shared.update()
+                                    }
+                                }
                             )
                         }
                         .onDelete { indexSet in
@@ -77,8 +114,18 @@ struct HouseholdItemsListView: View {
                 )
             }
             .navigationTitle("Household")
-            .toolbarTitleDisplayMode(.inlineLarge)
+            .toolbarTitleDisplayMode(.large) // .large or .inlineLarge
             .toolbar {
+                if let _ = currentList {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button {
+                            onlyShowSelectedItems.toggle()
+                        } label: {
+                            Image(systemName: onlyShowSelectedItems ? "eye.fill" : "eye")
+                        }
+                    }
+                }
+
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
                         showSort.toggle()
@@ -97,6 +144,16 @@ struct HouseholdItemsListView: View {
                 
                 ToolbarItem(placement: .topBarTrailing) {
                     EditButton()
+                }
+            }
+            .onChange(of: onlyShowSelectedItems) { _, show in
+                searchText = ""
+                
+                if show,
+                    let currentList {
+                    sectionedItems.nsPredicate = NSPredicate.predicate(keyPathString: #keyPath(HouseholdItem.lists), value: currentList)
+                } else {
+                    sectionedItems.nsPredicate = nil
                 }
             }
             .searchable(text: $searchText, placement: .automatic, prompt: Text("Household item?"))
