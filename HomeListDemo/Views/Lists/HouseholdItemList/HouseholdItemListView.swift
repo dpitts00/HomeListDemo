@@ -12,6 +12,7 @@ struct HouseholdItemListView: View {
     var list: HouseholdItemList
     
     @State var isCurrent: Bool = false
+    @Binding var updatedListsAreCurrent: [Bool]
     @Binding var path: NavigationPath
     
     var body: some View {
@@ -24,7 +25,8 @@ struct HouseholdItemListView: View {
                 }
                 .buttonStyle(.plain)
 
-                Text(list.name ?? "")
+                Text((list.name ?? "").isEmpty ? "Untitled" : (list.name ?? ""))
+                    .opacity((list.name ?? "").isEmpty ? 0.5 : 1.0)
                 Spacer()
                 Text("\(list.itemCount)")
             }
@@ -34,12 +36,22 @@ struct HouseholdItemListView: View {
         .onTapGesture {
             path.append(list)
         }
-        .onAppear {
+        .task(id: updatedListsAreCurrent) {
             isCurrent = list.isCurrent
         }
-        .onChange(of: isCurrent) { _, newValue in
-            list.isCurrent = newValue
+        .onChange(of: isCurrent) { _, isCurrent in
+            let lists = StorageProvider.shared.getAllHouseholdItemLists()
+
+            if isCurrent {
+                lists.forEach { list in
+                    list.isCurrent = false
+                }
+            }
+            
+            list.isCurrent = isCurrent
             StorageProvider.shared.update()
+            
+            updatedListsAreCurrent = lists.map { $0.isCurrent }
         }
     }
 }
@@ -50,6 +62,7 @@ struct HouseholdItemListView: View {
     
     HouseholdItemListView(
         list: StorageProvider.shared.getAllHouseholdItemLists()[0],
+        updatedListsAreCurrent: .constant(StorageProvider.shared.getAllHouseholdItemLists().map { $0.isCurrent }),
         path: $path
     )
 }

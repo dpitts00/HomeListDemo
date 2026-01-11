@@ -21,14 +21,20 @@ struct ListsView: View {
     @State private var path = NavigationPath()
     
     @State private var showMenu = false
-    @State private var forceRefresh: String = ""
+    @State private var updatedMenuListsAreCurrent: [Bool] = []
+    @State private var updatedHouseholdListsAreCurrent: [Bool] = []
+    @State private var updatedRestaurantListsAreCurrent: [Bool] = []
     
     var body: some View {
         NavigationStack(path: $path) {
             List {
                 Section("Menu") {
                     ForEach(menuItemLists) { list in
-                        MenuItemListItemView(list: list, path: $path)
+                        MenuItemListItemView(
+                            list: list,
+                            updatedListsAreCurrent: $updatedMenuListsAreCurrent,
+                            path: $path
+                        )
                     }
                     .onDelete { indexSet in
                         indexSet.forEach { index in
@@ -48,7 +54,11 @@ struct ListsView: View {
                 
                 Section("Restaurant") {
                     ForEach(restaurantLists) { list in
-                        RestaurantListItemView(list: list, path: $path)
+                        RestaurantListItemView(
+                            list: list,
+                            updatedListsAreCurrent: $updatedRestaurantListsAreCurrent,
+                            path: $path
+                        )
                     }
                     .onDelete { indexSet in
                         indexSet.forEach { index in
@@ -68,7 +78,11 @@ struct ListsView: View {
 
                 Section("Household") {
                     ForEach(householdItemLists) { list in
-                        HouseholdItemListView(list: list, path: $path)
+                        HouseholdItemListView(
+                            list: list,
+                            updatedListsAreCurrent: $updatedHouseholdListsAreCurrent,
+                            path: $path
+                        )
                     }
                     .onDelete { indexSet in
                         indexSet.forEach { index in
@@ -86,6 +100,11 @@ struct ListsView: View {
                     }
                 }
             }
+            .onAppear {
+                updatedMenuListsAreCurrent = menuItemLists.map { $0.isCurrent }
+                updatedRestaurantListsAreCurrent = restaurantLists.map { $0.isCurrent }
+                updatedHouseholdListsAreCurrent = householdItemLists.map { $0.isCurrent }
+            }
             .navigationDestination(for: MenuItemList.self) { list in
                 MenuItemListDetailsView(list: list)
             }
@@ -102,7 +121,7 @@ struct ListsView: View {
                     } label: {
                         Image(systemName: "plus")
                     }
-                    .contextMenu(menuItems: {
+                    .confirmationDialog("New List", isPresented: $showMenu) {
                         Button {
                             StorageProvider.shared.saveMenuItemList(named: "")
                         } label: {
@@ -120,7 +139,7 @@ struct ListsView: View {
                         } label: {
                             Text("New Household List")
                         }
-                    })
+                    }
                 }
                 
                 ToolbarItem(placement: .topBarTrailing) {

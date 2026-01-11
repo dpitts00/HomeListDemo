@@ -38,7 +38,7 @@ struct HouseholdItemsListView: View {
                         LabeledContent {
                             Text("\(currentList.itemCount)")
                         } label: {
-                            Label(currentList.name ?? "", systemImage: "star.fill")
+                            Label((currentList.name ?? "").isEmpty ? "Untitled" : (currentList.name ?? ""), systemImage: "star.fill")
                                 .foregroundStyle(.primary)
                         }
                     }
@@ -154,6 +154,11 @@ struct HouseholdItemsListView: View {
                     sectionedItems.nsPredicate = NSPredicate.predicate(keyPathString: #keyPath(HouseholdItem.lists), value: currentList)
                 } else {
                     sectionedItems.nsPredicate = nil
+                }
+            }
+            .onChange(of: currentList) { _, list in
+                if list == nil {
+                    onlyShowSelectedItems = false
                 }
             }
             .searchable(text: $searchText, placement: .automatic, prompt: Text("Household item?"))
