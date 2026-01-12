@@ -15,7 +15,7 @@ struct MenuView: View {
                 HouseholdItemsListView()
             } label: {
                 Text("Household")
-                Image(systemName: "cross.case")
+                Image(systemName: "house")
             }
 
             Tab {
@@ -38,6 +38,14 @@ struct MenuView: View {
                 Text("Lists")
                 Image(systemName: "list.clipboard")
             }
+            
+            Tab {
+                Text("Settings")
+            } label: {
+                Text("Settings")
+                Image(systemName: "gearshape")
+            }
+
         }
     }
 }

@@ -8,7 +8,8 @@ import Foundation
 import CoreData
 
 extension StorageProvider {
-    func saveRestaurant(named name: String, menuItems: String = "", priceTier: Int = 0) {
+    @discardableResult
+    func saveRestaurant(named name: String, menuItems: String = "", priceTier: Int = 0) -> Restaurant? {
         let item = Restaurant(context: persistentContainer.viewContext)
         item.name = name
         item.menuItemList = menuItems
@@ -17,9 +18,11 @@ extension StorageProvider {
         do {
             try persistentContainer.viewContext.save()
             print("Success saving Restaurant")
+            return item
         } catch {
             persistentContainer.viewContext.rollback()
             print("Error saving Restaurant: \(error.localizedDescription)")
+            return nil
         }
     }
     

@@ -52,7 +52,15 @@ class StorageProvider {
         }
         
         if getAllMenuItemLists().isEmpty {
-            saveMenuItemList(named: "Default MenuItem List", isCurrent: true)
+            saveMenuItemList(named: "Menu List", isCurrent: true)
+        }
+        
+        if getAllHouseholdItemLists().isEmpty {
+            saveHouseholdItemList(named: "Household List", isCurrent: true)
+        }
+        
+        if getAllRestaurantLists().isEmpty {
+            saveRestaurantList(named: "Restaurant List", isCurrent: true)
         }
     }
 }

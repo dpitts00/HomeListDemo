@@ -50,19 +50,8 @@ struct MenuItemsListView: View {
                             MenuItemListItem(
                                 item: item,
                                 currentList: currentList,
-                                leadingAction: {
-                                   selectedItem = item
-                                },
-                                trailingAction: {},
                                 tapAction: {
-                                    guard let currentList else { return }
-                                    if currentList.items?.contains(item) ?? false {
-                                        currentList.removeFromItems(item)
-                                        StorageProvider.shared.update()
-                                    } else {
-                                        currentList.addToItems(item)
-                                        StorageProvider.shared.update()
-                                    }
+                                    selectedItem = item
                                 }
                             )
                         }
@@ -82,7 +71,7 @@ struct MenuItemsListView: View {
                                 StorageProvider.shared.saveMenuItem(named: searchText)
                             }
                         } label: {
-                            Label("Add New Item", systemImage: "plus")
+                            Label("Add \"\(searchText)\"", systemImage: "plus")
                         }
                     }
                 }
@@ -99,10 +88,6 @@ struct MenuItemsListView: View {
                 }
 
             }
-            .onChange(of: currentList?.items) { _, newValue in
-                // DEBUG ONLY, it's not updating the fetched results in the Lists tab
-                print("currentList.items changed")
-            }
             .onChange(of: searchText) {
                 _,
                 newValue in
@@ -118,9 +103,28 @@ struct MenuItemsListView: View {
                     ].compactMap { $0 }
                 )
             }
+            .onChange(of: currentList) { _, list in
+                if list == nil {
+                    onlyShowSelectedItems = false
+                }
+            }
+            .onChange(of: onlyShowSelectedItems) { _, show in
+                searchText = ""
+                
+                if show,
+                    let currentList {
+                    sectionedItems.nsPredicate = NSPredicate.predicate(keyPathString: #keyPath(MenuItem.lists), value: currentList)
+                } else {
+                    sectionedItems.nsPredicate = nil
+                }
+            }
             .navigationTitle("Menu")
-            .toolbarTitleDisplayMode(.large) // .large or .inlineLarge
+            .toolbarTitleDisplayMode(.large)
             .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    EditButton()
+                }
+                
                 if let _ = currentList {
                     ToolbarItem(placement: .topBarTrailing) {
                         Button {
@@ -148,22 +152,12 @@ struct MenuItemsListView: View {
                 }
                 
                 ToolbarItem(placement: .topBarTrailing) {
-                    EditButton()
-                }
-            }
-            .onChange(of: onlyShowSelectedItems) { _, show in
-                searchText = ""
-                
-                if show,
-                    let currentList {
-                    sectionedItems.nsPredicate = NSPredicate.predicate(keyPathString: #keyPath(MenuItem.lists), value: currentList)
-                } else {
-                    sectionedItems.nsPredicate = nil
-                }
-            }
-            .onChange(of: currentList) { _, list in
-                if list == nil {
-                    onlyShowSelectedItems = false
+                    Button {
+                        let newItem = StorageProvider.shared.saveMenuItem(named: "")
+                        selectedItem = newItem
+                    } label: {
+                        Image(systemName: "plus")
+                    }
                 }
             }
             .searchable(text: $searchText, placement: .automatic, prompt: Text("Menu item?"))

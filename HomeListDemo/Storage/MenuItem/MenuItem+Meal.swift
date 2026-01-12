@@ -20,7 +20,7 @@ extension Meal {
     var displayName: String {
         switch self {
         case .none:
-            return "uncategorized"
+            return "-"
             
         case .breakfast:
             return "breakfast"

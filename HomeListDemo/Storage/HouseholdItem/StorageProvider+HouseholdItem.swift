@@ -9,7 +9,8 @@ import Foundation
 import CoreData
 
 extension StorageProvider {
-    func saveHouseholdItem(named name: String, room: String? = nil, user: String? = nil) {
+    @discardableResult
+    func saveHouseholdItem(named name: String, room: String? = nil, user: String? = nil) -> HouseholdItem? {
         let item = HouseholdItem(context: persistentContainer.viewContext)
         item.name = name
         item.room = room
@@ -18,9 +19,11 @@ extension StorageProvider {
         do {
             try persistentContainer.viewContext.save()
             print("Success saving HouseholdItem")
+            return item
         } catch {
             persistentContainer.viewContext.rollback()
             print("Error saving HouseholdItem: \(error.localizedDescription)")
+            return nil
         }
     }
     

@@ -8,23 +8,30 @@
 import SwiftUI
 
 struct RestaurantListItem: View {
+    @Environment(\.editMode) var editMode
+
     var item: Restaurant
     var currentList: RestaurantList?
-    var leadingAction: () -> ()
-    var trailingAction: () -> ()
-    var tapAction: () -> ()
+    var tapAction: () -> () = {}
+
+    @State var isSelected: Bool = false
 
     var body: some View {
         Button {
             tapAction()
         } label: {
             HStack(spacing: 12) {
-                if let currentList {
-                    Image(systemName: currentList.items?.contains(item) ?? false ? "checkmark.square.fill" : "square")
+                if let _ = currentList {
+                    Button {
+                        isSelected.toggle()
+                    } label: {
+                        Image(systemName: isSelected ? "checkmark.square.fill" : "square")
+                    }
+                    .buttonStyle(.plain)
                 }
 
                 VStack(alignment: .leading) {
-                    Text(item.nameString)
+                    Text(item.name ?? "untitled")
                         .font(.headline)
                     Text((item.menuItemList?.isEmpty ?? false) ? "-" : item.menuItemList ?? "-")
                         .font(.subheadline)
@@ -35,12 +42,18 @@ struct RestaurantListItem: View {
             }
         }
         .contentShape(Rectangle())
-        .swipeActions(edge: .leading, allowsFullSwipe: true) {
-            Button {
-                leadingAction()
-            } label: {
-                Text("Select")
-                Image(systemName: "plus")
+        .deleteDisabled(!(editMode?.wrappedValue.isEditing ?? true))
+        .task(id: item) {
+            isSelected = currentList?.items?.contains(item) ?? false
+        }
+        .onChange(of: isSelected) { _, isSelected in
+            guard let currentList else { return }
+            if currentList.items?.contains(item) ?? false {
+                currentList.removeFromItems(item)
+                StorageProvider.shared.update()
+            } else {
+                currentList.addToItems(item)
+                StorageProvider.shared.update()
             }
         }
     }
@@ -49,8 +62,6 @@ struct RestaurantListItem: View {
 #Preview {
     RestaurantListItem(
         item: StorageProvider.shared.getAllRestaurants()[0],
-        leadingAction: {},
-        trailingAction: {},
-        tapAction: {}
+        tapAction: { print("tap") }
     )
 }

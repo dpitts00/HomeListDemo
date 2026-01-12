@@ -50,19 +50,8 @@ struct RestaurantsListView: View {
                             RestaurantListItem(
                                 item: item,
                                 currentList: currentList,
-                                leadingAction: {
-                                   selectedItem = item
-                                },
-                                trailingAction: {},
                                 tapAction: {
-                                    guard let currentList else { return }
-                                    if currentList.items?.contains(item) ?? false {
-                                        currentList.removeFromItems(item)
-                                        StorageProvider.shared.update()
-                                    } else {
-                                        currentList.addToItems(item)
-                                        StorageProvider.shared.update()
-                                    }
+                                    selectedItem = item
                                 }
                             )
                         }
@@ -105,7 +94,6 @@ struct RestaurantsListView: View {
                     return
                 }
                 
-                // this should be a compound predicate OR with menuItemsList property
                 sectionedItems.nsPredicate = NSCompoundPredicate(orPredicateWithSubpredicates: [
                     Restaurant.filterName(for: newValue),
                     Restaurant.filterMenuItemsList(for: newValue)
@@ -116,9 +104,23 @@ struct RestaurantsListView: View {
                     onlyShowSelectedItems = false
                 }
             }
+            .onChange(of: onlyShowSelectedItems) { _, show in
+                searchText = ""
+                
+                if show,
+                    let currentList {
+                    sectionedItems.nsPredicate = NSPredicate.predicate(keyPathString: #keyPath(Restaurant.lists), value: currentList)
+                } else {
+                    sectionedItems.nsPredicate = nil
+                }
+            }
             .navigationTitle("Restaurants")
-            .toolbarTitleDisplayMode(.large) // .large or .inlineLarge
-            .toolbar {
+            .toolbarTitleDisplayMode(.large)
+            .toolbar {                
+                ToolbarItem(placement: .topBarLeading) {
+                    EditButton()
+                }
+
                 if let _ = currentList {
                     ToolbarItem(placement: .topBarTrailing) {
                         Button {
@@ -146,17 +148,12 @@ struct RestaurantsListView: View {
                 }
                 
                 ToolbarItem(placement: .topBarTrailing) {
-                    EditButton()
-                }
-            }
-            .onChange(of: onlyShowSelectedItems) { _, show in
-                searchText = ""
-                
-                if show,
-                    let currentList {
-                    sectionedItems.nsPredicate = NSPredicate.predicate(keyPathString: #keyPath(Restaurant.lists), value: currentList)
-                } else {
-                    sectionedItems.nsPredicate = nil
+                    Button {
+                        let newItem = StorageProvider.shared.saveRestaurant(named: "")
+                        selectedItem = newItem
+                    } label: {
+                        Image(systemName: "plus")
+                    }
                 }
             }
             .searchable(text: $searchText, placement: .automatic, prompt: Text("Restaurant or menu item?"))

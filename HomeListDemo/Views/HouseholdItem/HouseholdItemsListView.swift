@@ -50,19 +50,8 @@ struct HouseholdItemsListView: View {
                             HouseholdItemListItem(
                                 item: item,
                                 currentList: currentList,
-                                leadingAction: {
-                                   selectedItem = item
-                                },
-                                trailingAction: {},
                                 tapAction: {
-                                    guard let currentList else { return }
-                                    if currentList.items?.contains(item) ?? false {
-                                        currentList.removeFromItems(item)
-                                        StorageProvider.shared.update()
-                                    } else {
-                                        currentList.addToItems(item)
-                                        StorageProvider.shared.update()
-                                    }
+                                    selectedItem = item
                                 }
                             )
                         }
@@ -113,37 +102,9 @@ struct HouseholdItemsListView: View {
                     ]
                 )
             }
-            .navigationTitle("Household")
-            .toolbarTitleDisplayMode(.large) // .large or .inlineLarge
-            .toolbar {
-                if let _ = currentList {
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Button {
-                            onlyShowSelectedItems.toggle()
-                        } label: {
-                            Image(systemName: onlyShowSelectedItems ? "eye.fill" : "eye")
-                        }
-                    }
-                }
-
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        showSort.toggle()
-                    } label: {
-                        Image(systemName: "arrow.up.arrow.down")
-                    }
-                }
-                
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        showFilter.toggle()
-                    } label: {
-                        Image(systemName: "line.3.horizontal.decrease")
-                    }
-                }
-                
-                ToolbarItem(placement: .topBarTrailing) {
-                    EditButton()
+            .onChange(of: currentList) { _, list in
+                if list == nil {
+                    onlyShowSelectedItems = false
                 }
             }
             .onChange(of: onlyShowSelectedItems) { _, show in
@@ -156,9 +117,46 @@ struct HouseholdItemsListView: View {
                     sectionedItems.nsPredicate = nil
                 }
             }
-            .onChange(of: currentList) { _, list in
-                if list == nil {
-                    onlyShowSelectedItems = false
+            .navigationTitle("Household")
+            .toolbarTitleDisplayMode(.large)
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    EditButton()
+                }
+                
+                if let _ = currentList {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button {
+                            onlyShowSelectedItems.toggle()
+                        } label: {
+                            Label(onlyShowSelectedItems ? "Show all items" : "Show only selected items", systemImage: onlyShowSelectedItems ? "eye.fill" : "eye")
+                        }
+                    }
+                }
+
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        showSort.toggle()
+                    } label: {
+                        Label("Sort", systemImage: "arrow.up.arrow.down")
+                    }
+                }
+                
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        showFilter.toggle()
+                    } label: {
+                        Label("Filter", systemImage: "line.3.horizontal.decrease")
+                    }
+                }
+                
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        let newItem = StorageProvider.shared.saveHouseholdItem(named: "")
+                        selectedItem = newItem
+                    } label: {
+                        Label("Add", systemImage: "plus")
+                    }
                 }
             }
             .searchable(text: $searchText, placement: .automatic, prompt: Text("Household item?"))
