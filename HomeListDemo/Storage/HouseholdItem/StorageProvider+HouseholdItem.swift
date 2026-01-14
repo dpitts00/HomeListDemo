@@ -49,7 +49,6 @@ extension StorageProvider {
         }
     }
     
-    // TODO: Error - not updating the view when the priceTier is updated, even though the model is updated
     func updateHouseholdItems() {
         do {
             try persistentContainer.viewContext.save()
