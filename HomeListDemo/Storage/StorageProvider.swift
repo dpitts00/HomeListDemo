@@ -62,5 +62,11 @@ class StorageProvider {
         if getAllRestaurantLists().isEmpty {
             saveRestaurantList(named: "Restaurant List", isCurrent: true)
         }
+        
+        if getAllIngredientTypes().isEmpty {
+            saveIngredientType(named: "Dairy")
+            saveIngredientType(named: "Produce")
+            saveIngredientType(named: "Bakery")
+        }
     }
 }

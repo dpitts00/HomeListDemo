@@ -28,6 +28,15 @@ extension StorageProvider {
         }
     }
     
+    func get<T: NSManagedObject>(fetchRequest: NSFetchRequest<T>) -> [T] {
+        do {
+            return try persistentContainer.viewContext.fetch(fetchRequest)
+        } catch {
+            print("Error fetching [\(T.self)]: \(error.localizedDescription)")
+            return []
+        }
+    }
+    
     func delete<T: NSManagedObject>(_ item: T) {
         persistentContainer.viewContext.delete(item)
         

@@ -88,96 +88,96 @@ struct MenuItemsListView: View {
                 }
 
             }
-            .onChange(of: searchText) {
-                _,
-                newValue in
-                guard !newValue.isEmpty else {
-                    sectionedItems.nsPredicate = nil
-                    return
-                }
-                
-                sectionedItems.nsPredicate = NSCompoundPredicate(
-                    orPredicateWithSubpredicates: [
-                        MenuItem.filterName(for: newValue),
-                        MenuItem.filterIngredientList(for: newValue)
-                    ].compactMap { $0 }
-                )
-            }
-            .onChange(of: currentList) { _, list in
-                if list == nil {
-                    onlyShowSelectedItems = false
-                }
-            }
-            .onChange(of: onlyShowSelectedItems) { _, show in
-                searchText = ""
-                
-                if show,
-                    let currentList {
-                    sectionedItems.nsPredicate = NSPredicate.predicate(keyPathString: #keyPath(MenuItem.lists), value: currentList)
-                } else {
-                    sectionedItems.nsPredicate = nil
-                }
-            }
-            .navigationTitle("Menu")
-            .toolbarTitleDisplayMode(.large)
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    EditButton()
-                }
-                
-                if let _ = currentList {
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Button {
-                            onlyShowSelectedItems.toggle()
-                        } label: {
-                            Image(systemName: onlyShowSelectedItems ? "eye.fill" : "eye")
-                        }
-                    }
-                }
-                
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        showSort.toggle()
-                    } label: {
-                        Image(systemName: "arrow.up.arrow.down")
-                    }
-                }
-                
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        showFilter.toggle()
-                    } label: {
-                        Image(systemName: "line.3.horizontal.decrease")
-                    }
-                }
-                
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        let newItem = StorageProvider.shared.saveMenuItem(named: "")
-                        selectedItem = newItem
-                    } label: {
-                        Image(systemName: "plus")
-                    }
-                }
-            }
-            .searchable(text: $searchText, placement: .automatic, prompt: Text("Menu item?"))
-            .sheet(isPresented: $showFilter) {
-                FilterView<MenuItem>(predicate: $sectionedItems.nsPredicate)
-                    .presentationDetents([.medium])
-            }
-            .sheet(isPresented: $showSort) {
-                SortView<MenuItem, String>(
-                    sortDescriptors: $sectionedItems.nsSortDescriptors,
-                    sectionIdentifier: $sectionedItems.sectionIdentifier
-                )
-                    .presentationDetents([.medium])
-            }
-            .sheet(item: $selectedItem) { item in
-                MenuItemDetailsView(item: item)
-            }
-            .sheet(item: $selectedList) { list in
-                MenuItemListDetailsView(list: list)
-            }
+//            .onChange(of: searchText) {
+//                _,
+//                newValue in
+//                guard !newValue.isEmpty else {
+//                    sectionedItems.nsPredicate = nil
+//                    return
+//                }
+//                
+//                sectionedItems.nsPredicate = NSCompoundPredicate(
+//                    orPredicateWithSubpredicates: [
+//                        MenuItem.filterName(for: newValue),
+//                        MenuItem.filterIngredientList(for: newValue)
+//                    ].compactMap { $0 }
+//                )
+//            }
+//            .onChange(of: currentList) { _, list in
+//                if list == nil {
+//                    onlyShowSelectedItems = false
+//                }
+//            }
+//            .onChange(of: onlyShowSelectedItems) { _, show in
+//                searchText = ""
+//                
+//                if show,
+//                    let currentList {
+//                    sectionedItems.nsPredicate = NSPredicate.predicate(keyPathString: #keyPath(MenuItem.lists), value: currentList)
+//                } else {
+//                    sectionedItems.nsPredicate = nil
+//                }
+//            }
+//            .navigationTitle("Menu")
+//            .toolbarTitleDisplayMode(.large)
+//            .toolbar {
+//                ToolbarItem(placement: .topBarLeading) {
+//                    EditButton()
+//                }
+//                
+//                if let _ = currentList {
+//                    ToolbarItem(placement: .topBarTrailing) {
+//                        Button {
+//                            onlyShowSelectedItems.toggle()
+//                        } label: {
+//                            Image(systemName: onlyShowSelectedItems ? "eye.fill" : "eye")
+//                        }
+//                    }
+//                }
+//                
+//                ToolbarItem(placement: .topBarTrailing) {
+//                    Button {
+//                        showSort.toggle()
+//                    } label: {
+//                        Image(systemName: "arrow.up.arrow.down")
+//                    }
+//                }
+//                
+//                ToolbarItem(placement: .topBarTrailing) {
+//                    Button {
+//                        showFilter.toggle()
+//                    } label: {
+//                        Image(systemName: "line.3.horizontal.decrease")
+//                    }
+//                }
+//                
+//                ToolbarItem(placement: .topBarTrailing) {
+//                    Button {
+//                        let newItem = StorageProvider.shared.saveMenuItem(named: "")
+//                        selectedItem = newItem
+//                    } label: {
+//                        Image(systemName: "plus")
+//                    }
+//                }
+//            }
+//            .searchable(text: $searchText, placement: .automatic, prompt: Text("Menu item?"))
+//            .sheet(isPresented: $showFilter) {
+//                FilterView<MenuItem>(predicate: $sectionedItems.nsPredicate)
+//                    .presentationDetents([.medium])
+//            }
+//            .sheet(isPresented: $showSort) {
+//                SortView<MenuItem, String>(
+//                    sortDescriptors: $sectionedItems.nsSortDescriptors,
+//                    sectionIdentifier: $sectionedItems.sectionIdentifier
+//                )
+//                    .presentationDetents([.medium])
+//            }
+//            .sheet(item: $selectedItem) { item in
+//                MenuItemDetailsView(item: item)
+//            }
+//            .sheet(item: $selectedList) { list in
+//                MenuItemListDetailsView(list: list)
+//            }
         }
     }
 }

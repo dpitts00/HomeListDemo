@@ -8,6 +8,10 @@
 import SwiftUI
 import CoreData
 
+enum ListPath: Hashable {
+    case groceryList(list: MenuItemList)
+}
+
 struct ListsView: View {
     @FetchRequest(fetchRequest: MenuItemList.lists)
     var menuItemLists: FetchedResults<MenuItemList>
@@ -106,13 +110,19 @@ struct ListsView: View {
                 updatedHouseholdListsAreCurrent = householdItemLists.map { $0.isCurrent }
             }
             .navigationDestination(for: MenuItemList.self) { list in
-                MenuItemListDetailsView(list: list)
+                MenuItemListDetailsView(path: $path, list: list)
             }
             .navigationDestination(for: RestaurantList.self) { list in
                 RestaurantListDetailsView(list: list)
             }
             .navigationDestination(for: HouseholdItemList.self) { list in
                 HouseholdItemListDetailsView(list: list)
+            }
+            .navigationDestination(for: ListPath.self) { path in
+                switch path {
+                case .groceryList(let list):
+                    IngredientsForMenuItemList(list: list)
+                }
             }
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {

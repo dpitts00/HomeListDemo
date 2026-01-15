@@ -8,34 +8,40 @@
 import SwiftUI
 import CoreData
 
-struct IngredientWithQuantity: Hashable {
+struct IngredientWithQuantity: Identifiable, Hashable {
+    var id: ObjectIdentifier {
+        ingredient.id
+    }
+    
     // but NOT the CoreData model
     let ingredient: Ingredient
     let quantity: Int
+    let menuItems: [MenuItem]
+    var isSelected: Bool = false
     
     var name: String {
         ingredient.name ?? ""
     }
+    
+    // replace with a localized list formatter
+    var menuItemsList: String {
+        menuItems
+            .compactMap { $0.name }
+            .joined(separator: ", ")
+    }
+    
+    mutating func select() {
+        isSelected.toggle()
+    }
 }
 
 struct MenuItemListDetailsView: View {
+    @Binding var path: NavigationPath
+    
     var list: MenuItemList
     
-    var sortedIngredients: [IngredientWithQuantity] {
-        let ingredients = list.itemsArray.flatMap { $0.ingredientQtysArray }.compactMap { $0.ingredient }
-        let set = NSCountedSet(array: ingredients)
-        let ingredientsWithQuantityArray = set.compactMap { item in
-            if let ingredient = item as? Ingredient {
-                return IngredientWithQuantity(ingredient: ingredient, quantity: set.count(for: ingredient))
-            } else {
-                return nil
-            }
-        }
-        return ingredientsWithQuantityArray.sorted(by: { $0.ingredient.name ?? "" < $1.ingredient.name ?? "" })
-    }
-    
     @State private var name: String = ""
-    
+        
     var body: some View {
         List {
             Section("Name") {
@@ -48,11 +54,12 @@ struct MenuItemListDetailsView: View {
                 }
             }
             
-            Section("All Ingredients") {
-                ForEach(sortedIngredients, id: \IngredientWithQuantity.ingredient) { item in
-                    LabeledContent(item.name, value: "\(item.quantity)")
-                }
+            Button {
+                path.append(ListPath.groceryList(list: list))
+            } label: {
+                Text("Grocery List")
             }
+            
         }
         .task(id: list) {
             name = list.name ?? ""
@@ -67,7 +74,7 @@ struct MenuItemListDetailsView: View {
 #Preview {
     let lists = StorageProvider.shared.getAllMenuItemLists()
     if lists.count > 0 {
-        MenuItemListDetailsView(list: lists[0])
+        MenuItemListDetailsView(path: .constant(NavigationPath()), list: lists[0])
     } else {
         Text("no lists saved")
     }

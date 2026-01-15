@@ -63,4 +63,15 @@ extension NSPredicate {
             ]
         )
     }
+    
+    // trying to check for `value` IN to-many Set
+    public static func predicateIn(keyPathString: String, value: NSManagedObject?) -> NSPredicate {
+        return NSPredicate(
+            format: "%@ IN %K",
+            argumentArray: [
+                value,
+                keyPathString
+            ]
+        )
+    }
 }

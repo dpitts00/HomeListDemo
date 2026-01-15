@@ -8,25 +8,43 @@
 import SwiftUI
 
 struct IngredientsListView: View {
+    @Environment(\.editMode) var editMode
+    
     @State var ingredients = StorageProvider.shared.getAllIngredients()
     @State var ingredientText = ""
+    
+    @Binding var path: NavigationPath
 
     var body: some View {
         List {
-            ForEach(ingredients) { item in
-                Text(item.name ?? "")
-            }
-            
-            HStack {
-                TextField("Add an ingredient", text: $ingredientText)
-                    .onSubmit {
-                        saveIngredient(named: ingredientText)
+            Section("All Ingredients") {
+                ForEach(ingredients) { item in
+                    Button {
+                        path.append(item)
+                    } label: {
+                        Text(item.name ?? "")
                     }
+                    .deleteDisabled(editMode?.wrappedValue.isEditing ?? true)
+                }
+                .onDelete { indexSet in
+                    indexSet.forEach { index in
+                        StorageProvider.shared.delete(ingredients[index])
+                    }
+                    
+                    ingredients.remove(atOffsets: indexSet)
+                }
                 
-                Button {
-                    saveIngredient(named: ingredientText)
-                } label: {
-                    Image(systemName: "plus")
+                HStack {
+                    TextField("Add an ingredient", text: $ingredientText)
+                        .onSubmit {
+                            saveIngredient(named: ingredientText)
+                        }
+                    
+                    Button {
+                        saveIngredient(named: ingredientText)
+                    } label: {
+                        Image(systemName: "plus")
+                    }
                 }
             }
             
@@ -38,6 +56,14 @@ struct IngredientsListView: View {
                     Text("Delete all?")
                 }
             }
+        }
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                EditButton()
+            }
+        }
+        .navigationDestination(for: Ingredient.self) { ingredient in
+            IngredientDetailView(ingredient: ingredient)
         }
     }
 }
@@ -53,5 +79,10 @@ extension IngredientsListView {
 }
 
 #Preview {
-    IngredientsListView()
+    @Previewable
+    @State var path = NavigationPath()
+    
+    NavigationStack(path: $path) {
+        IngredientsListView(path: $path)
+    }
 }
