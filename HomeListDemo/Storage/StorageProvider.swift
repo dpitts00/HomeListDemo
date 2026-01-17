@@ -8,7 +8,7 @@
 import Foundation
 import CoreData
 
-class StorageProvider {
+public class StorageProvider {
     static let shared = StorageProvider()
     
     let persistentContainer: NSPersistentContainer
@@ -67,6 +67,10 @@ class StorageProvider {
             saveIngredientType(named: "Dairy")
             saveIngredientType(named: "Produce")
             saveIngredientType(named: "Bakery")
+            saveIngredientType(named: "Meat")
+            saveIngredientType(named: "Pantry")
         }
+        
+//        IngredientTypeStrings.setupIngredientTypes(in: self)
     }
 }

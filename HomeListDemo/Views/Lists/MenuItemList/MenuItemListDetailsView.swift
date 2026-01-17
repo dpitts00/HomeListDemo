@@ -39,6 +39,7 @@ struct MenuItemListDetailsView: View {
     @Binding var path: NavigationPath
     
     var list: MenuItemList
+    var hideGroceryList: Bool = false
     
     @State private var name: String = ""
         
@@ -72,10 +73,15 @@ struct MenuItemListDetailsView: View {
 }
 
 #Preview {
+    @Previewable
+    @State var path = NavigationPath()
+    
     let lists = StorageProvider.shared.getAllMenuItemLists()
-    if lists.count > 0 {
-        MenuItemListDetailsView(path: .constant(NavigationPath()), list: lists[0])
-    } else {
-        Text("no lists saved")
+
+    NavigationStack(path: $path) {
+        MenuItemListDetailsView(path: $path, list: lists[0])
+            .navigationDestination(for: MenuItemList.self) { list in
+                IngredientsForMenuItemList(list: list)
+            }
     }
 }

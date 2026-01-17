@@ -15,6 +15,9 @@ extension StorageProvider {
         let item = Ingredient(context: persistentContainer.viewContext)
         item.name = name
         
+        let allIngredientTypes = getAllIngredientTypes()
+        item.type = IngredientType.type(for: item, in: allIngredientTypes)
+        
         do {
             try persistentContainer.viewContext.save()
             print("Success saving Ingredient")

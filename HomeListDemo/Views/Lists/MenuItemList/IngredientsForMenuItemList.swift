@@ -26,44 +26,52 @@ struct IngredientsForMenuItemList: View {
             ForEach(StorageProvider.shared.getAllIngredientTypes()) { type in
                 Section(type.name ?? "") {
                     ForEach(ingredients(for: type)) { item in
-                        Text(item.name)
+                        GroceryListItemView(
+                            item: item,
+                            list: list,
+                            selectIngredient: selectIngredient
+                        )
                     }
                 }
             }
             
-            Section("All ingredients") {
-                ForEach(ingredientsForList) { item in
-                    HStack(spacing: 12) {
-                        Image(systemName: item.isSelected ? "checkmark.square.fill" : "square")
-                            .onTapGesture {
-                                if let index = ingredientsForList.firstIndex(of: item) {
-                                    ingredientsForList[index].select()
-                                }
-                            }
-
-                        VStack(alignment: .leading) {
-                            LabeledContent {
-                                Text("\(item.quantity)")
-                            } label: {
-                                Text(item.name)
-                            }
-                            
-                            Text(item.menuItemsList)
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                        }
-                    }
+            Section("Other") {
+                ForEach(ingredients(for: nil)) { item in
+                    GroceryListItemView(
+                        item: item,
+                        list: list,
+                        selectIngredient: selectIngredient
+                    )
                 }
             }
         }
-        .task {
+        .onAppear {
             ingredientsForList = list.allIngredientQtysForMenuItemList()
-            // need a merging function for persistence and such
+            
+            guard let selectedIngredients = list.selectedIngredients as? Set<Ingredient> else { return }
+            ingredientsForList.enumerated().forEach { index, item in
+                if selectedIngredients.contains(item.ingredient) {
+                    ingredientsForList[index].isSelected = true
+                }
+            }
         }
     }
     
-    func ingredients(for type: IngredientType) -> [IngredientWithQuantity] {
+    func ingredients(for type: IngredientType?) -> [IngredientWithQuantity] {
         ingredientsForList.filter { $0.ingredient.type == type }
+    }
+    
+    func selectIngredient(_ ingredient: Ingredient, in list: MenuItemList) {
+        guard let selectedIngredients = list.selectedIngredients as? Set<Ingredient> else { return }
+        if selectedIngredients.contains(ingredient) {
+            list.removeFromSelectedIngredients(ingredient)
+        } else {
+            list.addToSelectedIngredients(ingredient)
+        }
+        
+        if let index = ingredientsForList.firstIndex(where: { $0.ingredient == ingredient }) {
+            ingredientsForList[index].select()
+        }
     }
 }
 

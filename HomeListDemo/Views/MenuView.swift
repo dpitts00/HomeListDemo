@@ -40,12 +40,15 @@ struct MenuView: View {
             }
             
             Tab {
-                Text("Settings")
+                SettingsView()
             } label: {
                 Text("Settings")
                 Image(systemName: "gearshape")
             }
 
+        }
+        .task {
+            IngredientTypeStrings.setupIngredientTypes(in: StorageProvider.shared)
         }
     }
 }
