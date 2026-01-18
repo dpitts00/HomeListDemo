@@ -9,7 +9,7 @@ import SwiftUI
 import CoreData
 
 struct HouseholdItemListView: View {
-    var list: HouseholdItemList
+    @ObservedObject var list: HouseholdItemList
     
     @State var isCurrent: Bool = false
     @Binding var updatedListsAreCurrent: [Bool]

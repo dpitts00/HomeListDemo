@@ -108,8 +108,7 @@ extension IngredientType {
             .components(separatedBy: .whitespaces)
             .contains(where: { nameComponent in
                 if let _ = IngredientTypeStrings.produceArray.firstIndex(where: { string in
-                    print(nameComponent, string, nameComponent.contains(string.localizedLowercase))
-                    return nameComponent.localizedLowercase.contains(string.localizedLowercase)
+                    nameComponent.localizedLowercase.contains(string.localizedLowercase)
                 }) {
                     return true
                 } else {

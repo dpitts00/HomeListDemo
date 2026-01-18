@@ -11,7 +11,7 @@ import Combine
 struct IngredientQtyItemView: View {
     @State var quantity: Int = 1
 
-    var item: IngredientQty
+    @ObservedObject var item: IngredientQty
     
     var incrementPublisher: PassthroughSubject<IngredientQty, Never>
     

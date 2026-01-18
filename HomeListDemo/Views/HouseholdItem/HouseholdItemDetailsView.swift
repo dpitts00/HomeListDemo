@@ -10,7 +10,7 @@ import SwiftUI
 struct HouseholdItemDetailsView: View {
     @Environment(\.dismiss) var dismiss
     
-    var item: HouseholdItem
+    @ObservedObject var item: HouseholdItem
     
     @State var name: String = ""
     @State var room: SelectableValue?

@@ -11,7 +11,7 @@ import CoreData
 struct MenuItemListItem: View {
     @Environment(\.editMode) var editMode
     
-    var item: MenuItem
+    @ObservedObject var item: MenuItem
     var currentList: MenuItemList?
     var tapAction: () -> () = {}
     

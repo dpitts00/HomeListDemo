@@ -9,7 +9,7 @@ import SwiftUI
 import CoreData
 
 struct MenuItemListItemView: View {
-    var list: MenuItemList
+    @ObservedObject var list: MenuItemList
     
     @State var isCurrent: Bool = false
     @Binding var updatedListsAreCurrent: [Bool]

@@ -9,8 +9,8 @@ import SwiftUI
 import CoreData
 
 struct GroceryListItemView: View {
-    var item: IngredientWithQuantity
-    var list: MenuItemList
+    var item: IngredientWithQuantity // cannot be @ObservedObject, but could be @Binding maybe; it's a struct though so does it matter?
+    @ObservedObject var list: MenuItemList
     var selectIngredient: (Ingredient, MenuItemList) -> ()
     
     var body: some View {

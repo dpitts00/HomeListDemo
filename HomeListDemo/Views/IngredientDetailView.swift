@@ -17,7 +17,7 @@ struct IngredientDetailView: View {
     @State var type: IngredientType?
     @State var typeText: String = ""
     
-    var ingredient: Ingredient
+    @ObservedObject var ingredient: Ingredient
     
     var body: some View {
         List {

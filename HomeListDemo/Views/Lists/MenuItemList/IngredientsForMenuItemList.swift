@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct IngredientsForMenuItemList: View {
-    var list: MenuItemList
+    @ObservedObject var list: MenuItemList
     
     @State var ingredientsForList: [IngredientWithQuantity] = []
         

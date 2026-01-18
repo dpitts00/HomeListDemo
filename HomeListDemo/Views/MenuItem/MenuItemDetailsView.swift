@@ -16,7 +16,7 @@ struct MenuItemDetailsView: View {
     @FetchRequest(fetchRequest: Ingredient.ingredientsByName)
     var allIngredients: FetchedResults<Ingredient>
     
-    var item: MenuItem
+    @ObservedObject var item: MenuItem
     
     let incrementPublisher = PassthroughSubject<IngredientQty, Never>()
     

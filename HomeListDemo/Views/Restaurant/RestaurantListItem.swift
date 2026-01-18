@@ -10,7 +10,7 @@ import SwiftUI
 struct RestaurantListItem: View {
     @Environment(\.editMode) var editMode
 
-    var item: Restaurant
+    @ObservedObject var item: Restaurant
     var currentList: RestaurantList?
     var tapAction: () -> () = {}
 

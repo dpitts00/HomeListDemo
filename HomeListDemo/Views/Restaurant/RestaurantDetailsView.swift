@@ -11,7 +11,7 @@ import CoreData
 struct RestaurantDetailsView: View {
     @Environment(\.dismiss) var dismiss
     
-    var item: Restaurant
+    @ObservedObject var item: Restaurant
     
     @State var name: String = ""
     @State var menuItemList: String = ""

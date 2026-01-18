@@ -9,7 +9,7 @@ import SwiftUI
 import CoreData
 
 struct HouseholdItemListDetailsView: View {
-    var list: HouseholdItemList
+    @ObservedObject var list: HouseholdItemList
     
     @State private var name: String = ""
     

@@ -11,8 +11,8 @@ import SwiftUI
 struct HouseholdItemListItem: View {
     @Environment(\.editMode) var editMode
 
-    var item: HouseholdItem
-    var currentList: HouseholdItemList?
+    @ObservedObject var item: HouseholdItem
+    var currentList: HouseholdItemList? // can be @ObservedObject if not nil
     var tapAction: () -> () = {}
     
     @State var isSelected: Bool = false

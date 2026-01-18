@@ -38,7 +38,7 @@ struct IngredientWithQuantity: Identifiable, Hashable {
 struct MenuItemListDetailsView: View {
     @Binding var path: NavigationPath
     
-    var list: MenuItemList
+    @ObservedObject var list: MenuItemList
     var hideGroceryList: Bool = false
     
     @State private var name: String = ""
@@ -55,10 +55,12 @@ struct MenuItemListDetailsView: View {
                 }
             }
             
-            Button {
-                path.append(ListPath.groceryList(list: list))
-            } label: {
-                Text("Grocery List")
+            if !hideGroceryList {
+                Button {
+                    path.append(ListPath.groceryList(list: list))
+                } label: {
+                    Text("Grocery List")
+                }
             }
             
         }
