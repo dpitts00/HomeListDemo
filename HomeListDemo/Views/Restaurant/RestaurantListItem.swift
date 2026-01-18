@@ -23,7 +23,7 @@ struct RestaurantListItem: View {
             HStack(spacing: 12) {
                 if let _ = currentList {
                     Button {
-                        isSelected.toggle()
+                        handleSelected(item: item)
                     } label: {
                         Image(systemName: isSelected ? "checkmark.square.fill" : "square")
                     }
@@ -46,16 +46,20 @@ struct RestaurantListItem: View {
         .task(id: item) {
             isSelected = currentList?.items?.contains(item) ?? false
         }
-        .onChange(of: isSelected) { _, isSelected in
-            guard let currentList else { return }
-            if currentList.items?.contains(item) ?? false {
-                currentList.removeFromItems(item)
-                StorageProvider.shared.update()
-            } else {
-                currentList.addToItems(item)
-                StorageProvider.shared.update()
-            }
+    }
+    
+    func handleSelected(item: Restaurant) {
+        guard let currentList else { return }
+        if currentList.items?.contains(item) ?? false {
+            currentList.removeFromItems(item)
+            StorageProvider.shared.update()
+            isSelected = false
+        } else {
+            currentList.addToItems(item)
+            StorageProvider.shared.update()
+            isSelected = true
         }
+
     }
 }
 

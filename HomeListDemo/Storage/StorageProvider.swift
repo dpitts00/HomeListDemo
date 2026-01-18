@@ -24,7 +24,25 @@ public class StorageProvider {
         
         // DEBUG
         if getAllMenuItems().isEmpty {
-            saveMenuItem(named: "waffles", meal: .breakfast, priceTier: 1)
+            let item = saveMenuItem(named: "waffles", meal: .breakfast, priceTier: 1)
+            if let eggs = saveIngredient(named: "eggs"),
+               let eggsQty = saveIngredientQty(for: eggs) {
+                item?.addToIngredients(eggsQty)
+            }
+            
+            if let butter = saveIngredient(named: "butter"),
+               let butterQty = saveIngredientQty(for: butter) {
+                item?.addToIngredients(butterQty)
+            }
+
+            if let pancakeMix = saveIngredient(named: "pancake mix"),
+               let pancakeMixQty = saveIngredientQty(for: pancakeMix) {
+                item?.addToIngredients(pancakeMixQty)
+            }
+            
+            update()
+            
+            
             saveMenuItem(named: "egg sandwich", meal: .breakfast, priceTier: 1)
             saveMenuItem(named: "uncrustables", meal: .lunch, priceTier: 1)
             saveMenuItem(named: "pasta salad", meal: .lunch, priceTier: 2)

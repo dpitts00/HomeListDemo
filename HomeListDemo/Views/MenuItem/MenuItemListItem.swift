@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import CoreData
 
 struct MenuItemListItem: View {
     @Environment(\.editMode) var editMode
@@ -23,7 +24,7 @@ struct MenuItemListItem: View {
             HStack(spacing: 12) {
                 if let _ = currentList {
                     Button {
-                        isSelected.toggle()
+                        handleSelected(item: item)
                     } label: {
                         Image(systemName: isSelected ? "checkmark.square.fill" : "square")
                     }
@@ -45,16 +46,24 @@ struct MenuItemListItem: View {
         .task(id: item) {
             isSelected = currentList?.items?.contains(item) ?? false
         }
-        .onChange(of: isSelected) { _, isSelected in
-            guard let currentList else { return }
-            if currentList.items?.contains(item) ?? false {
-                currentList.removeFromItems(item)
-                StorageProvider.shared.update()
-            } else {
-                currentList.addToItems(item)
-                StorageProvider.shared.update()
-            }
+    }
+    
+    func handleSelected(item: MenuItem) {
+        guard let currentList else { return }
+//        print("onChange", isSelected, item.name ?? "", currentList.items?.count ?? -1)
+        if currentList.items?.contains(item) ?? false {
+            currentList.removeFromItems(item)
+            StorageProvider.shared.update()
+//            print("removed \(item.name ?? "")")
+            isSelected = false
+        } else {
+            currentList.addToItems(item)
+            StorageProvider.shared.update()
+//            print("added \(item.name ?? "")")
+            isSelected = true
         }
+        // TEST - no
+//            StorageProvider.shared.persistentContainer.viewContext.refresh(currentList, mergeChanges: true)
     }
 }
 

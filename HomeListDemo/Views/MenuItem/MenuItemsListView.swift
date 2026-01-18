@@ -38,7 +38,8 @@ struct MenuItemsListView: View {
                         selectedList = currentList
                     } label: {
                         LabeledContent {
-                            Text("\(currentList.itemCount)")
+//                            Text("\(currentList.itemCount)")
+                            Text("\(currentList.items?.count ?? 0)")
                         } label: {
                             Label((currentList.name ?? "").isEmpty ? "Untitled" : (currentList.name ?? ""), systemImage: "star.fill")
                                 .foregroundStyle(.primary)

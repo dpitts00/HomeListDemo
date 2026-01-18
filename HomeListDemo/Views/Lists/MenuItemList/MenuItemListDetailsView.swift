@@ -80,6 +80,7 @@ struct MenuItemListDetailsView: View {
 
     NavigationStack(path: $path) {
         MenuItemListDetailsView(path: $path, list: lists[0])
+            .environment(\.managedObjectContext, StorageProvider.shared.persistentContainer.viewContext) // NO
             .navigationDestination(for: MenuItemList.self) { list in
                 IngredientsForMenuItemList(list: list)
             }

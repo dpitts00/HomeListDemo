@@ -24,7 +24,7 @@ struct HouseholdItemListItem: View {
             HStack(spacing: 12) {
                 if let _ = currentList {
                     Button {
-                        isSelected.toggle()
+                        handleSelected(item: item)
                     } label: {
                         Image(systemName: isSelected ? "checkmark.square.fill" : "square")
                     }
@@ -45,21 +45,20 @@ struct HouseholdItemListItem: View {
         .task(id: item) {
             isSelected = currentList?.items?.contains(item) ?? false
         }
-        .onChange(of: isSelected) { _, isSelected in
-            // this should be linked better -- isSelected and add/remove below
-            // for now, the redundancy may cause unnecessary redraws
-            guard let currentList else { return }
-            if currentList.items?.contains(item) ?? false {
-                currentList.removeFromItems(item)
-                StorageProvider.shared.update()
-                
-                self.isSelected = false
-            } else {
-                currentList.addToItems(item)
-                StorageProvider.shared.update()
-                
-                self.isSelected = true
-            }
+    }
+    
+    func handleSelected(item: HouseholdItem) {
+        guard let currentList else { return }
+        if currentList.items?.contains(item) ?? false {
+            currentList.removeFromItems(item)
+            StorageProvider.shared.update()
+            
+            isSelected = false
+        } else {
+            currentList.addToItems(item)
+            StorageProvider.shared.update()
+            
+            isSelected = true
         }
     }
 }
