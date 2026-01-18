@@ -6,22 +6,17 @@
 //
 
 import SwiftUI
-import Combine
 
 struct IngredientQtyItemView: View {
     @State var quantity: Int = 1
 
     @ObservedObject var item: IngredientQty
     
-    var incrementPublisher: PassthroughSubject<IngredientQty, Never>
-    
     var body: some View {
         LabeledContent {
             HStack {
                 Button{
-                    if quantity > 1 {
-                        quantity -= 1
-                    }
+                    handleQuantity(item.quantity - 1)
                 } label: {
                     Image(systemName: "minus")
                         .contentShape(.rect)
@@ -33,11 +28,11 @@ struct IngredientQtyItemView: View {
                     // reserve space, use correct method later
                     Text("99")
                         .hidden()
-                    Text("\(quantity)")
+                    Text("\(item.quantity)")
                 }
                 
                 Button{
-                    quantity += 1
+                    handleQuantity(item.quantity + 1)
                 } label: {
                     Image(systemName: "plus")
                         .contentShape(.rect)
@@ -49,16 +44,12 @@ struct IngredientQtyItemView: View {
         } label: {
             Text("\(item.ingredient?.name ?? "")")
         }
-        .onChange(of: quantity) { _, newValue in
-            if quantity > 0 && quantity < 100 {
-                item.quantity = Int32(newValue)
-                StorageProvider.shared.update()
-            }
-        }
-        .onReceive(incrementPublisher) { ingredientQty in
-            if item.id == ingredientQty.id {
-                quantity += 1
-            }
+    }
+    
+    func handleQuantity(_ quantity: Int32) {
+        if quantity > 0 && quantity < 100 {
+            item.quantity = quantity
+            StorageProvider.shared.update()
         }
     }
 }
@@ -69,7 +60,5 @@ struct IngredientQtyItemView: View {
     
     let item = ingredients[0]
     
-    let publisher = PassthroughSubject<IngredientQty, Never>()
-    
-    IngredientQtyItemView(item: item, incrementPublisher: publisher)
+    IngredientQtyItemView(item: item)
 }

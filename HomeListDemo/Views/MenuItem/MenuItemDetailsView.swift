@@ -18,15 +18,19 @@ struct MenuItemDetailsView: View {
     
     @ObservedObject var item: MenuItem
     
-    let incrementPublisher = PassthroughSubject<IngredientQty, Never>()
-    
     @State var name: String = ""
     @State var meal: SelectableValue?
-    @State var ingredients: [IngredientQty] = []
+    
     @State var priceTier: SelectableValue?
     
     @State var ingredientText: String = ""
     @State var possibleMatches: [Ingredient] = []
+    
+    var ingredients: [IngredientQty] {
+        item.ingredients?.sortedArray(using: [sortDescriptor]) as? [IngredientQty] ?? []
+    }
+    
+    let sortDescriptor = NSSortDescriptor(key: #keyPath(IngredientQty.ingredient.name), ascending: true)
 
     
     var body: some View {
@@ -40,16 +44,13 @@ struct MenuItemDetailsView: View {
                     ForEach(ingredients) { item in
                         IngredientQtyItemView(
                             quantity: Int(item.quantity),
-                            item: item,
-                            incrementPublisher: incrementPublisher
+                            item: item
                         )
                     }
                     .onDelete { indexSet in
                         indexSet.forEach { index in
                             StorageProvider.shared.delete(ingredients[index])
                         }
-                        
-                        ingredients.remove(atOffsets: indexSet)
                     }
                     
                     VStack(alignment: .leading) {
@@ -94,7 +95,6 @@ struct MenuItemDetailsView: View {
             }
             .task(id: item) {
                 name = item.name ?? ""
-                ingredients = item.ingredients?.sortedArray(using: [NSSortDescriptor(keyPath: \IngredientQty.ingredient?.name, ascending: true)]) as? [IngredientQty] ?? []
                 meal = MenuItem.selectableMealValues.first(where: { $0.rawValue == item.meal })
                 priceTier = MenuItem.selectablePriceTierValues.first(where: { $0.rawValue == String(item.priceTier) })
             }
@@ -142,9 +142,10 @@ extension MenuItemDetailsView {
     
     func saveIngredient(named name: String) {
         if !name.isEmpty {
-            if let ingredient = allIngredients.first(where: { $0.name == name }) {
+            if let ingredient = allIngredients.first(where: { $0.name?.localizedLowercase == name.localizedLowercase }) {
                 if let ingredientQty = ingredients.first(where: { $0.ingredient == ingredient }) {
-                    incrementPublisher.send(ingredientQty)
+                    ingredientQty.quantity += 1
+                    StorageProvider.shared.update()
                     return
                 } else {
                     saveIngredientQty(for: ingredient, in: item)
@@ -162,17 +163,16 @@ extension MenuItemDetailsView {
     func saveIngredientQty(for ingredient: Ingredient, in menuItem: MenuItem) {
         if let index = ingredients.firstIndex(where:  { $0.ingredient == ingredient }) {
             let ingredientQty = ingredients[index]
-            incrementPublisher.send(ingredientQty)
-            // will update() when quantity changes in the list item
+            ingredientQty.quantity += 1
+            StorageProvider.shared.update()
+
             ingredientText = ""
-            ingredients = menuItem.ingredientQtysArray
         } else {
             if let ingredientQty = StorageProvider.shared.saveIngredientQty(for: ingredient) {
                 menuItem.addToIngredients(ingredientQty)
                 StorageProvider.shared.update()
 
                 ingredientText = ""
-                ingredients = menuItem.ingredientQtysArray
             }
         }
     }

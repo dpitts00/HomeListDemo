@@ -15,7 +15,7 @@
     </entity>
     <entity name="Ingredient" representedClassName="Ingredient" syncable="YES" codeGenerationType="class">
         <attribute name="name" optional="YES" attributeType="String"/>
-        <relationship name="quantities" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="IngredientQty" inverseName="ingredient" inverseEntity="IngredientQty"/>
+        <relationship name="quantities" optional="YES" toMany="YES" deletionRule="Deny" destinationEntity="IngredientQty" inverseName="ingredient" inverseEntity="IngredientQty"/>
         <relationship name="type" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="IngredientType" inverseName="ingredientsForType" inverseEntity="IngredientType"/>
     </entity>
     <entity name="IngredientQty" representedClassName="IngredientQty" syncable="YES" codeGenerationType="class">
