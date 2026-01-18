@@ -146,9 +146,11 @@ extension MenuItemDetailsView {
                 if let ingredientQty = ingredients.first(where: { $0.ingredient == ingredient }) {
                     ingredientQty.quantity += 1
                     StorageProvider.shared.update()
+                    ingredientText = ""
                     return
                 } else {
                     saveIngredientQty(for: ingredient, in: item)
+                    ingredientText = ""
                     return
                 }
             }

@@ -10,7 +10,9 @@ import SwiftUI
 struct IngredientsListView: View {
     @Environment(\.editMode) var editMode
     
-    @State var ingredients = StorageProvider.shared.getAllIngredients()
+    @FetchRequest(fetchRequest: Ingredient.ingredientsByName)
+    var ingredients: FetchedResults<Ingredient>
+    
     @State var ingredientText = ""
     
     @Binding var path: NavigationPath
@@ -30,8 +32,6 @@ struct IngredientsListView: View {
                     indexSet.forEach { index in
                         StorageProvider.shared.delete(ingredients[index])
                     }
-                    
-                    ingredients.remove(atOffsets: indexSet)
                 }
                 
                 HStack {
@@ -51,7 +51,6 @@ struct IngredientsListView: View {
             Section {
                 Button(role: .destructive) {
                     StorageProvider.shared.deleteAllIngredients()
-                    ingredients = StorageProvider.shared.getAllIngredients()
                 } label: {
                     Text("Delete all?")
                 }
@@ -73,7 +72,6 @@ extension IngredientsListView {
         if !name.isEmpty {
             StorageProvider.shared.saveIngredient(named: name)
             ingredientText = ""
-            ingredients = StorageProvider.shared.getAllIngredients()
         }
     }
 }

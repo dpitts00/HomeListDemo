@@ -31,6 +31,7 @@ struct HouseholdItemListDetailsView: View {
         .onDisappear {
             list.name = name
             StorageProvider.shared.update()
+            StorageProvider.shared.persistentContainer.viewContext.refresh(list, mergeChanges: true)
         }
     }
 }
